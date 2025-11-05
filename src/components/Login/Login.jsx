@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import emailjs from '@emailjs/browser'; // Import EmailJS yang benar
+import emailjs from '@emailjs/browser';
 import './Login.css';
 
 export default function Login() {
@@ -31,12 +31,34 @@ export default function Login() {
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
   const [regJurusan, setRegJurusan] = useState('');
+  const [regJenjang, setRegJenjang] = useState(''); // State untuk jenjang pendidikan
   const [regError, setRegError] = useState('');
   const [regSuccess, setRegSuccess] = useState('');
   const [regLoading, setRegLoading] = useState(false);
   
+  // State untuk toggle password visibility di register
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
+  
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // ==================== PASSWORD VALIDATION ====================
+  const validatePasswordStrength = (pass) => {
+    return {
+      hasUpperCase: /[A-Z]/.test(pass),
+      hasNumber: /\d/.test(pass),
+      hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(pass),
+      minLength: pass.length >= 6
+    };
+  };
+
+  const passwordValidation = validatePasswordStrength(regPassword);
+  const isPasswordValid = 
+    passwordValidation.hasUpperCase && 
+    passwordValidation.hasNumber && 
+    passwordValidation.hasSymbol && 
+    passwordValidation.minLength;
 
   // ==================== LOGIN ====================
   const handleLogin = async () => {
@@ -51,10 +73,7 @@ export default function Login() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Ambil data users dari localStorage
       const users = JSON.parse(localStorage.getItem('users')) || [];
-      
-      // Cari user berdasarkan NIM
       const user = users.find(u => u.nim === nim);
       
       if (user && user.password === password) {
@@ -62,6 +81,7 @@ export default function Login() {
           nim: user.nim,
           nama: user.nama,
           jurusan: user.jurusan,
+          jenjang: user.jenjang,
           email: user.email,
           phone: user.phone
         };
@@ -97,7 +117,6 @@ export default function Login() {
     setResetSuccess('');
 
     try {
-      // Cek apakah NIM dan Email terdaftar di localStorage
       const users = JSON.parse(localStorage.getItem('users')) || [];
       const user = users.find(u => u.nim === resetNim && u.email === resetEmail);
 
@@ -107,33 +126,29 @@ export default function Login() {
         return;
       }
 
-      // Generate token  sreset passwordederhana (bisa diganti dengan JWT atau UUID)
       const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
       
-      // Simpan token ke localStorage (dalam dunia nyata, simpan di database)
       const resetRequests = JSON.parse(localStorage.getItem('resetRequests')) || [];
       resetRequests.push({
         nim: resetNim,
         email: resetEmail,
         token: resetToken,
-        expiresAt: Date.now() + 3600000 // 1 jam
+        expiresAt: Date.now() + 3600000
       });
       localStorage.setItem('resetRequests', JSON.stringify(resetRequests));
 
-      // Kirim email menggunakan EmailJS
       const templateParams = {
-        to_email: resetEmail, // Email penerima
-        user_name: user.nama, // Nama user
-        reset_link: `${window.location.origin}/reset-password?token=${resetToken}`, // Link reset (sesuaikan dengan route kamu)
+        to_email: resetEmail,
+        user_name: user.nama,
+        reset_link: `${window.location.origin}/reset-password?token=${resetToken}`,
         nim: resetNim
       };
 
-      // Ganti dengan ID service, template, dan user kamu dari EmailJS dashboard
       await emailjs.send(
-        'YOUR_SERVICE_ID', // Ganti dengan Service ID dari EmailJS
-        'YOUR_TEMPLATE_ID', // Ganti dengan Template ID dari EmailJS (buat template email di dashboard)
+        'YOUR_SERVICE_ID',
+        'YOUR_TEMPLATE_ID',
         templateParams,
-        'YOUR_USER_ID' // Ganti dengan User ID dari EmailJS
+        'YOUR_USER_ID'
       );
 
       setResetSuccess('Link reset password telah dikirim ke email Anda! Silakan cek inbox atau spam folder.');
@@ -155,38 +170,32 @@ export default function Login() {
 
   // ==================== REGISTER ====================
   const handleRegister = async () => {
-    // Validasi input
     if (!regNim || !regNama || !regEmail || !regPassword || !regConfirmPassword) {
-      setRegError('Semua field harus diisi!');
+      setRegError('Semua field wajib harus diisi!');
       return;
     }
 
-    // Validasi NIM (harus angka)
     if (!/^\d+$/.test(regNim)) {
       setRegError('NIM harus berupa angka!');
       return;
     }
 
-    // Validasi email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(regEmail)) {
       setRegError('Format email tidak valid!');
       return;
     }
 
-    // Validasi phone (opsional, kalau diisi)
     if (regPhone && !/^\d+$/.test(regPhone)) {
       setRegError('Nomor telepon harus berupa angka!');
       return;
     }
 
-    // Validasi password minimal 6 karakter
-    if (regPassword.length < 6) {
-      setRegError('Password minimal 6 karakter!');
+    if (!isPasswordValid) {
+      setRegError('Password harus memenuhi semua kriteria!');
       return;
     }
 
-    // Validasi password match
     if (regPassword !== regConfirmPassword) {
       setRegError('Password tidak cocok!');
       return;
@@ -199,10 +208,8 @@ export default function Login() {
     try {
       await new Promise(resolve => setTimeout(resolve, 1500));
 
-      // Ambil data users dari localStorage
       const users = JSON.parse(localStorage.getItem('users')) || [];
       
-      // Cek apakah NIM sudah terdaftar
       const nimExists = users.find(u => u.nim === regNim);
       if (nimExists) {
         setRegError('NIM sudah terdaftar! Silakan login.');
@@ -210,7 +217,6 @@ export default function Login() {
         return;
       }
 
-      // Cek apakah Email sudah terdaftar
       const emailExists = users.find(u => u.email === regEmail);
       if (emailExists) {
         setRegError('Email sudah terdaftar!');
@@ -218,24 +224,22 @@ export default function Login() {
         return;
       }
 
-      // Buat user baru
       const newUser = {
         nim: regNim,
         nama: regNama,
         email: regEmail,
         phone: regPhone,
         jurusan: regJurusan || 'Belum Ditentukan',
+        jenjang: regJenjang || 'Belum Ditentukan',
         password: regPassword,
         createdAt: new Date().toISOString()
       };
 
-      // Simpan ke localStorage
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
 
       setRegSuccess('Pendaftaran berhasil! Silakan login.');
       
-      // Reset form
       setRegNim('');
       setRegNama('');
       setRegEmail('');
@@ -243,8 +247,8 @@ export default function Login() {
       setRegPassword('');
       setRegConfirmPassword('');
       setRegJurusan('');
+      setRegJenjang('');
 
-      // Auto redirect ke login setelah 2 detik
       setTimeout(() => {
         setShowRegister(false);
         setRegSuccess('');
@@ -292,6 +296,7 @@ export default function Login() {
     setRegPassword('');
     setRegConfirmPassword('');
     setRegJurusan('');
+    setRegJenjang('');
   };
 
   return (
@@ -303,12 +308,10 @@ export default function Login() {
       <div className="login-card">
         <div className="card-content">
           
-          {/* Logo */}
           <div className="avatar-container">
             <img src="/picture/logo1.png" alt="Logo UBSI" width="200" />
           </div>
 
-          {/* Title */}
           <h2 className="login-title">
             {showForgotPassword ? '' : showRegister ? '' : ''}
           </h2>
@@ -519,22 +522,68 @@ export default function Login() {
                 />
               </div>
 
+              {/* Jenjang Pendidikan Dropdown */}
               <div className="input-group">
-                <Lock className="input-icon" />
-                <input
-                  type="password"
-                  placeholder="Password (min. 6 karakter) *"
-                  value={regPassword}
-                  onChange={(e) => setRegPassword(e.target.value)}
+                <GraduationCap className="input-icon" />
+                <select
+                  value={regJenjang}
+                  onChange={(e) => setRegJenjang(e.target.value)}
                   disabled={regLoading}
-                  className="input-field"
-                />
+                  className="input-field select-field"
+                >
+                  <option value="">Pilih Jenjang Pendidikan (Opsional)</option>
+                  <option value="D3">D3 - Diploma 3</option>
+                  <option value="S1">S1 - Sarjana</option>
+                  <option value="S2">S2 - Magister</option>
+                </select>
               </div>
 
               <div className="input-group">
                 <Lock className="input-icon" />
                 <input
-                  type="password"
+                  type={showRegPassword ? 'text' : 'password'}
+                  placeholder="Password *"
+                  value={regPassword}
+                  onChange={(e) => setRegPassword(e.target.value)}
+                  disabled={regLoading}
+                  className="input-field"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowRegPassword(!showRegPassword)}
+                  className="password-toggle-icon"
+                  disabled={regLoading}
+                >
+                  {showRegPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              {regPassword && (
+                <div className="password-strength">
+                  <div className={`strength-item ${passwordValidation.minLength ? 'valid' : 'invalid'}`}>
+                    {passwordValidation.minLength ? <Check size={16} /> : <X size={16} />}
+                    <span>Minimal 6 karakter</span>
+                  </div>
+                  <div className={`strength-item ${passwordValidation.hasUpperCase ? 'valid' : 'invalid'}`}>
+                    {passwordValidation.hasUpperCase ? <Check size={16} /> : <X size={16} />}
+                    <span>Minimal 1 huruf besar</span>
+                  </div>
+                  <div className={`strength-item ${passwordValidation.hasNumber ? 'valid' : 'invalid'}`}>
+                    {passwordValidation.hasNumber ? <Check size={16} /> : <X size={16} />}
+                    <span>Minimal 1 angka</span>
+                  </div>
+                  <div className={`strength-item ${passwordValidation.hasSymbol ? 'valid' : 'invalid'}`}>
+                    {passwordValidation.hasSymbol ? <Check size={16} /> : <X size={16} />}
+                    <span>Minimal 1 simbol (!@#$%^&*)</span>
+                  </div>
+                </div>
+              )}
+
+              <div className="input-group">
+                <Lock className="input-icon" />
+                <input
+                  type={showRegConfirmPassword ? 'text' : 'password'}
                   placeholder="Konfirmasi Password *"
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
@@ -542,6 +591,14 @@ export default function Login() {
                   disabled={regLoading}
                   className="input-field"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
+                  className="password-toggle-icon"
+                  disabled={regLoading}
+                >
+                  {showRegConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
 
               {regError && (

@@ -6,13 +6,13 @@
   align-items: center;
   justify-content: center;
   background:
-  radial-gradient(ellipse 110% 70% at 25% 80%, rgba(255, 140, 0, 0.18), transparent 90%),  /* Orange */
-  radial-gradient(ellipse 130% 60% at 75% 15%, rgba(25, 78, 152, 0.25), transparent 90%),  /* Dark Blue */
-  radial-gradient(ellipse 100% 50% at 60% 70%, rgba(255, 140, 0, 0.10), transparent 90%),  /* Subtle Orange glow */
-  radial-gradient(ellipse 90% 40% at 30% 30%, rgba(15, 52, 96, 0.15), transparent 90%),    /* Deep Blue tint */
-  #000000; /* Base background */
-  background-size: 200% 200%; /* Membuat background lebih besar untuk animasi pergerakan */
-  animation: moveBackground 15s ease-in-out infinite; /* Animasi pergerakan background, durasi 15 detik, loop tak terbatas */
+  radial-gradient(ellipse 110% 70% at 25% 80%, rgba(255, 140, 0, 0.18), transparent 90%),
+  radial-gradient(ellipse 130% 60% at 75% 15%, rgba(25, 78, 152, 0.25), transparent 90%),
+  radial-gradient(ellipse 100% 50% at 60% 70%, rgba(255, 140, 0, 0.10), transparent 90%),
+  radial-gradient(ellipse 90% 40% at 30% 30%, rgba(15, 52, 96, 0.15), transparent 90%),
+  #000000;
+  background-size: 200% 200%;
+  animation: moveBackground 15s ease-in-out infinite;
   position: relative;
   overflow: hidden;
   padding: 2rem 0;
@@ -50,7 +50,6 @@
   }
 }
 
-/* Background Pattern Animation */
 @keyframes movePattern {
   0% {
     transform: translate(0, 0);
@@ -93,7 +92,6 @@
   overflow-y: auto;
 }
 
-/* Custom Scrollbar */
 .card-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -155,6 +153,7 @@
   width: 1.25rem;
   height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
+  z-index: 1;
 }
 
 .input-field {
@@ -162,7 +161,7 @@
   background: transparent;
   border: none;
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  padding: 0.75rem 0.5rem 0.75rem 2rem;
+  padding: 0.75rem 2.5rem 0.75rem 2rem;
   color: white;
   font-size: 1rem;
   outline: none;
@@ -182,6 +181,29 @@
   cursor: not-allowed;
 }
 
+/* Select Field (Dropdown) */
+.select-field {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 12px;
+}
+
+.select-field option {
+  background: #1a1a2e;
+  color: white;
+  padding: 0.5rem;
+}
+
+.select-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 /* Password Toggle Icon */
 .password-toggle-icon {
   position: absolute;
@@ -194,6 +216,7 @@
   cursor: pointer;
   padding: 0.5rem;
   transition: color 0.3s ease;
+  z-index: 2;
 }
 
 .password-toggle-icon:hover {
@@ -203,6 +226,49 @@
 .password-toggle-icon:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.strength-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.3s ease;
+}
+
+.strength-item.valid {
+  color: #22c55e;
+}
+
+.strength-item.valid svg {
+  color: #22c55e;
+}
+
+.strength-item.invalid {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.strength-item.invalid svg {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.strength-item svg {
+  flex-shrink: 0;
+}
+
+.strength-item span {
+  font-size: 0.8rem;
 }
 
 /* Error Message */
@@ -400,5 +466,9 @@
 
   .input-field {
     font-size: 0.875rem;
+  }
+
+  .strength-item span {
+    font-size: 0.75rem;
   }
 }
