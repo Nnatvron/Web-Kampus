@@ -63,8 +63,9 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
     if (!email) return res.status(400).json({ message: "Email wajib diisi" });
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User tidak ditemukan" });
+  const user = await User.findOne({ nim, email });
+  if (!user) return res.status(404).json({ message: "NIM atau Email tidak ditemukan" });
+
 
     // Buat token reset password
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
@@ -80,7 +81,7 @@ export const forgotPassword = async (req, res) => {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: email, // kirim ke email user
+      to: email,
       subject: "Reset Password UBSI Portal",
       html: `<p>Halo ${user.nama},</p>
              <p>Untuk mereset password, klik link berikut:</p>

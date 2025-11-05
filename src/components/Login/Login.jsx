@@ -80,8 +80,8 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/auth'
 
   // ==================== FORGOT PASSWORD (Backend) ====================
 const handleForgotPassword = async () => {
-  if (!resetNim || !resetEmail) {
-    setResetError('NIM dan Email harus diisi!');
+  if (!resetEmail) {
+    setResetError('Email harus diisi!');
     return;
   }
 
@@ -90,13 +90,9 @@ const handleForgotPassword = async () => {
   setResetSuccess('');
 
   try {
-    const res = await axios.post(`${API_URL}/forgot-password`, {
-      nim: resetNim,
-      email: resetEmail
-    });
+    const res = await axios.post(`${API_URL}/forgot-password`, { email: resetEmail });
 
     setResetSuccess(res.data.message || "Link reset password telah dikirim ke email Anda!");
-    setResetNim('');
     setResetEmail('');
 
     setTimeout(() => {
@@ -276,71 +272,59 @@ const handleForgotPassword = async () => {
           )}
 
           {/* ==================== FORGOT PASSWORD FORM ==================== */}
-          {showForgotPassword && (
-            <div className="form-container">
-              
-              <p className="forgot-password-info">
-                Masukkan NIM dan Email terdaftar Anda. Link reset password akan dikirim ke email.
-              </p>
+{showForgotPassword && (
+  <div className="form-container">
+    <p className="forgot-password-info">
+      Masukkan NIM dan Email terdaftar Anda. Link reset password akan dikirim ke email.
+    </p>
 
-              <div className="input-group">
-                <Mail className="input-icon" />
-                <input
-                  type="text"
-                  placeholder="NIM"
-                  value={resetNim}
-                  onChange={(e) => setResetNim(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={resetLoading}
-                  className="input-field"
-                />
-              </div>
+    <div className="input-group">
+      <Mail className="input-icon" />
+      <input
+        type="text"
+        placeholder="NIM"
+        value={resetNim}
+        onChange={(e) => setResetNim(e.target.value)}
+        disabled={resetLoading}
+        className="input-field"
+      />
+    </div>
 
-              <div className="input-group">
-                <Mail className="input-icon" />
-                <input
-                  type="email"
-                  placeholder="Email"
-                  value={resetEmail}
-                  onChange={(e) => setResetEmail(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={resetLoading}
-                  className="input-field"
-                />
-              </div>
+    <div className="input-group">
+      <Mail className="input-icon" />
+      <input
+        type="email"
+        placeholder="Email"
+        value={resetEmail}
+        onChange={(e) => setResetEmail(e.target.value)}
+        disabled={resetLoading}
+        className="input-field"
+      />
+    </div>
 
-              {resetError && (
-                <div className="error-message">
-                  {resetError}
-                </div>
-              )}
+    {resetError && <div className="error-message">{resetError}</div>}
+    {resetSuccess && <div className="success-message">{resetSuccess}</div>}
 
-              {resetSuccess && (
-                <div className="success-message">
-                  {resetSuccess}
-                </div>
-              )}
+    <button
+      type="button"
+      onClick={handleForgotPassword}
+      disabled={resetLoading}
+      className="login-button"
+    >
+      {resetLoading ? 'Mengirim...' : 'Kirim Link Reset'}
+    </button>
 
-              <button
-                type="button"
-                onClick={handleForgotPassword}
-                disabled={resetLoading}
-                className="login-button"
-              >
-                {resetLoading ? 'Mengirim...' : 'Kirim Link Reset'}
-              </button>
-
-              <button
-                type="button"
-                onClick={toggleForgotPassword}
-                className="back-to-login"
-                disabled={resetLoading}
-              >
-                <ArrowLeft size={16} />
-                Kembali ke Login
-              </button>
-            </div>
-          )}
+    <button
+      type="button"
+      onClick={toggleForgotPassword}
+      className="back-to-login"
+      disabled={resetLoading}
+    >
+      <ArrowLeft size={16} />
+      Kembali ke Login
+    </button>
+  </div>
+)}
 
           {/* ==================== REGISTER FORM ==================== */}
           {showRegister && (

@@ -1,0 +1,22 @@
+.reset-wrapper {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reset-wrapper input {
+  padding: 10px;
+  font-size: 16px;
+}
+
+.reset-wrapper button {
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
