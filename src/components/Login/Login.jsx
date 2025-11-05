@@ -1,8 +1,8 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // ⬅️ Tambah ini
 import { Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
-import emailjs from '@emailjs/browser';
 import './Login.css';
 
 export default function Login() {
@@ -11,18 +11,14 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // State untuk toggle show/hide password di login
   const [showPassword, setShowPassword] = useState(false);
-  
-  // State untuk Forgot Password
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetNim, setResetNim] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
   const [resetError, setResetError] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
-  
-  // State untuk Register
+
   const [showRegister, setShowRegister] = useState(false);
   const [regNim, setRegNim] = useState('');
   const [regNama, setRegNama] = useState('');
@@ -31,27 +27,26 @@ export default function Login() {
   const [regPassword, setRegPassword] = useState('');
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
   const [regJurusan, setRegJurusan] = useState('');
-  const [regJenjang, setRegJenjang] = useState(''); // State untuk jenjang pendidikan
+  const [regJenjang, setRegJenjang] = useState('');
   const [regError, setRegError] = useState('');
   const [regSuccess, setRegSuccess] = useState('');
   const [regLoading, setRegLoading] = useState(false);
-  
-  // State untuk toggle password visibility di register
+
   const [showRegPassword, setShowRegPassword] = useState(false);
   const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
-  
+
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/auth';
+
   // ==================== PASSWORD VALIDATION ====================
-  const validatePasswordStrength = (pass) => {
-    return {
-      hasUpperCase: /[A-Z]/.test(pass),
-      hasNumber: /\d/.test(pass),
-      hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(pass),
-      minLength: pass.length >= 6
-    };
-  };
+  const validatePasswordStrength = (pass) => ({
+    hasUpperCase: /[A-Z]/.test(pass),
+    hasNumber: /\d/.test(pass),
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(pass),
+    minLength: pass.length >= 6
+  });
 
   const passwordValidation = validatePasswordStrength(regPassword);
   const isPasswordValid = 
@@ -60,219 +55,112 @@ export default function Login() {
     passwordValidation.hasSymbol && 
     passwordValidation.minLength;
 
-  // ==================== LOGIN ====================
+  // ==================== LOGIN (Backend) ====================
   const handleLogin = async () => {
-    if (!nim || !password) {
-      setError('NIM dan Password harus diisi!');
-      return;
-    }
+  if (!nim || !password) {
+    setError('NIM dan Password harus diisi!');
+    return;
+  }
 
-    setLoading(true);
-    setError('');
+  setLoading(true);
+  setError('');
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    const res = await axios.post(`${API_URL}/login`, { nim, password });
 
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.nim === nim);
-      
-      if (user && user.password === password) {
-        const userData = {
-          nim: user.nim,
-          nama: user.nama,
-          jurusan: user.jurusan,
-          jenjang: user.jenjang,
-          email: user.email,
-          phone: user.phone
-        };
-        
-        login('token_' + user.nim, userData);
-        navigate('/dashboard');
-      } else {
-        setError('NIM atau Password salah!');
-      }
-      
-    } catch (err) {
-      setError('Terjadi kesalahan, coba lagi!');
-    } finally {
-      setLoading(false);
-    }
-  };
+    login(res.data.token, res.data.user);
+    navigate('/dashboard');
+  } catch (err) {
+    const message = err.response?.data?.message || "Login gagal";
+    setError(message);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  // ==================== FORGOT PASSWORD ====================
-  const handleForgotPassword = async () => {
-    if (!resetNim || !resetEmail) {
-      setResetError('NIM dan Email harus diisi!');
-      return;
-    }
+  // ==================== FORGOT PASSWORD (Backend) ====================
+const handleForgotPassword = async () => {
+  if (!resetNim || !resetEmail) {
+    setResetError('NIM dan Email harus diisi!');
+    return;
+  }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(resetEmail)) {
-      setResetError('Format email tidak valid!');
-      return;
-    }
+  setResetLoading(true);
+  setResetError('');
+  setResetSuccess('');
 
-    setResetLoading(true);
-    setResetError('');
-    setResetSuccess('');
+  try {
+    const res = await axios.post(`${API_URL}/forgot-password`, {
+      nim: resetNim,
+      email: resetEmail
+    });
 
-    try {
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      const user = users.find(u => u.nim === resetNim && u.email === resetEmail);
+    setResetSuccess(res.data.message || "Link reset password telah dikirim ke email Anda!");
+    setResetNim('');
+    setResetEmail('');
 
-      if (!user) {
-        setResetError('NIM atau Email tidak terdaftar!');
-        setResetLoading(false);
-        return;
-      }
+    setTimeout(() => {
+      setShowForgotPassword(false);
+      setResetSuccess('');
+    }, 3000);
+  } catch (err) {
+    const message = err.response?.data?.message || "Gagal mengirim email reset password";
+    setResetError(message);
+  } finally {
+    setResetLoading(false);
+  }
+};
 
-      const resetToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-      
-      const resetRequests = JSON.parse(localStorage.getItem('resetRequests')) || [];
-      resetRequests.push({
-        nim: resetNim,
-        email: resetEmail,
-        token: resetToken,
-        expiresAt: Date.now() + 3600000
-      });
-      localStorage.setItem('resetRequests', JSON.stringify(resetRequests));
+  // ==================== REGISTER (Backend) ====================
+ const handleRegister = async () => {
+  if (!regNim || !regNama || !regEmail || !regPassword || !regConfirmPassword) {
+    setRegError('Semua field wajib harus diisi!');
+    return;
+  }
 
-      const templateParams = {
-        to_email: resetEmail,
-        user_name: user.nama,
-        reset_link: `${window.location.origin}/reset-password?token=${resetToken}`,
-        nim: resetNim
-      };
+  if (regPassword !== regConfirmPassword) {
+    setRegError('Password tidak cocok!');
+    return;
+  }
 
-      await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
-        templateParams,
-        'YOUR_USER_ID'
-      );
+  setRegLoading(true);
+  setRegError('');
+  setRegSuccess('');
 
-      setResetSuccess('Link reset password telah dikirim ke email Anda! Silakan cek inbox atau spam folder.');
-      setResetNim('');
-      setResetEmail('');
-      
-      setTimeout(() => {
-        setShowForgotPassword(false);
-        setResetSuccess('');
-      }, 3000);
-      
-    } catch (err) {
-      console.error('Error sending email:', err);
-      setResetError('Gagal mengirim email. Coba lagi nanti.');
-    } finally {
-      setResetLoading(false);
-    }
-  };
+  try {
+    const res = await axios.post(`${API_URL}/register`, {
+      nim: regNim,
+      nama: regNama,
+      email: regEmail,
+      phone: regPhone,
+      jurusan: regJurusan || 'Belum Ditentukan',
+      jenjang: regJenjang || 'Belum Ditentukan',
+      password: regPassword
+    });
 
-  // ==================== REGISTER ====================
-  const handleRegister = async () => {
-    if (!regNim || !regNama || !regEmail || !regPassword || !regConfirmPassword) {
-      setRegError('Semua field wajib harus diisi!');
-      return;
-    }
+    setRegSuccess(res.data.message || "Pendaftaran berhasil! Silakan login.");
+    setTimeout(() => {
+      setShowRegister(false);
+      setRegSuccess('');
+    }, 2000);
+  } catch (err) {
+    const message = err.response?.data?.message || "Registrasi gagal";
+    setRegError(message);
+  } finally {
+    setRegLoading(false);
+  }
+};
 
-    if (!/^\d+$/.test(regNim)) {
-      setRegError('NIM harus berupa angka!');
-      return;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(regEmail)) {
-      setRegError('Format email tidak valid!');
-      return;
-    }
-
-    if (regPhone && !/^\d+$/.test(regPhone)) {
-      setRegError('Nomor telepon harus berupa angka!');
-      return;
-    }
-
-    if (!isPasswordValid) {
-      setRegError('Password harus memenuhi semua kriteria!');
-      return;
-    }
-
-    if (regPassword !== regConfirmPassword) {
-      setRegError('Password tidak cocok!');
-      return;
-    }
-
-    setRegLoading(true);
-    setRegError('');
-    setRegSuccess('');
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      const users = JSON.parse(localStorage.getItem('users')) || [];
-      
-      const nimExists = users.find(u => u.nim === regNim);
-      if (nimExists) {
-        setRegError('NIM sudah terdaftar! Silakan login.');
-        setRegLoading(false);
-        return;
-      }
-
-      const emailExists = users.find(u => u.email === regEmail);
-      if (emailExists) {
-        setRegError('Email sudah terdaftar!');
-        setRegLoading(false);
-        return;
-      }
-
-      const newUser = {
-        nim: regNim,
-        nama: regNama,
-        email: regEmail,
-        phone: regPhone,
-        jurusan: regJurusan || 'Belum Ditentukan',
-        jenjang: regJenjang || 'Belum Ditentukan',
-        password: regPassword,
-        createdAt: new Date().toISOString()
-      };
-
-      users.push(newUser);
-      localStorage.setItem('users', JSON.stringify(users));
-
-      setRegSuccess('Pendaftaran berhasil! Silakan login.');
-      
-      setRegNim('');
-      setRegNama('');
-      setRegEmail('');
-      setRegPhone('');
-      setRegPassword('');
-      setRegConfirmPassword('');
-      setRegJurusan('');
-      setRegJenjang('');
-
-      setTimeout(() => {
-        setShowRegister(false);
-        setRegSuccess('');
-      }, 2000);
-      
-    } catch (err) {
-      setRegError('Terjadi kesalahan, coba lagi!');
-    } finally {
-      setRegLoading(false);
-    }
-  };
-
+  // ==================== ENTER KEY ====================
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      if (showForgotPassword) {
-        handleForgotPassword();
-      } else if (showRegister) {
-        handleRegister();
-      } else {
-        handleLogin();
-      }
+      if (showForgotPassword) handleForgotPassword();
+      else if (showRegister) handleRegister();
+      else handleLogin();
     }
   };
 
+  // ==================== TOGGLE VIEW ====================
   const toggleForgotPassword = () => {
     setShowForgotPassword(!showForgotPassword);
     setShowRegister(false);
@@ -299,6 +187,7 @@ export default function Login() {
     setRegJenjang('');
   };
 
+  // ==================== RETURN JSX (Tidak diubah) ====================
   return (
     <div className="login-wrapper">
       <div className="background-pattern">
@@ -307,7 +196,6 @@ export default function Login() {
 
       <div className="login-card">
         <div className="card-content">
-          
           <div className="avatar-container">
             <img src="/picture/logo1.png" alt="Logo UBSI" width="200" />
           </div>
@@ -626,7 +514,7 @@ export default function Login() {
                 type="button"
                 onClick={toggleRegister}
                 className="back-to-login"
-                disabled={regLoading}
+                disabled={regLoading} 
               >
                 <ArrowLeft size={16} />
                 Sudah punya akun? Login
