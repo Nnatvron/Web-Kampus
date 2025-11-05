@@ -90,7 +90,13 @@ const handleForgotPassword = async () => {
   setResetSuccess('');
 
   try {
-    const res = await axios.post(`${API_URL}/forgot-password`, { email: resetEmail });
+if (!resetNim || !resetEmail) {
+  setResetError('NIM dan Email harus diisi!');
+  return;
+}
+
+const res = await axios.post(`${API_URL}/forgot-password`, { nim: resetNim, email: resetEmail });
+
 
     setResetSuccess(res.data.message || "Link reset password telah dikirim ke email Anda!");
     setResetEmail('');
