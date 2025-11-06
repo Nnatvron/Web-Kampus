@@ -79,15 +79,16 @@ export const forgotPassword = async (req, res) => {
       },
     });
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: "Reset Password UBSI Portal",
-      html: `<p>Halo ${user.nama},</p>
-             <p>Untuk mereset password, klik link berikut:</p>
-             <a href="${process.env.FRONTEND_URL}/reset-password/${token}">Reset Password</a>
-             <p>Link berlaku 1 jam.</p>`,
-    };
+const mailOptions = {
+  from: process.env.EMAIL_USER,
+  to: email,
+  subject: "Reset Password UBSI Portal",
+  html: `<p>Halo ${user.nama},</p>
+         <p>Untuk mereset password, klik link berikut:</p>
+         <a href="https://ubsioneplus.vercel.app/reset-password/${token}">Reset Password</a>
+         <p>Link berlaku 1 jam.</p>`,
+};
+
 
     await transporter.sendMail(mailOptions);
 

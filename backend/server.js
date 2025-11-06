@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173", // asal frontend kamu
+  origin: "https://ubsioneplus.vercel.app", // asal frontend kamu
   credentials: true
 }));
 
