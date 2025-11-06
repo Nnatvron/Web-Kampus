@@ -38,7 +38,7 @@ export default function Login() {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://ubsioneplus.vercel.app/api/auth';
+const API_URL = import.meta.env.VITE_API_URL || 'https://web-kampus-9i8ega164-natars-projects.vercel.app';
 
   // ==================== PASSWORD VALIDATION ====================
   const validatePasswordStrength = (pass) => ({

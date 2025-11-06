@@ -10,7 +10,7 @@ export default ({ mode }) => {
     server: {
   proxy: {
     '/api': {
-      target: 'http://localhost:5000',
+      target: 'https://web-kampus-9i8ega164-natars-projects.vercel.app',
       changeOrigin: true,
       secure: false,
     },

@@ -12,7 +12,7 @@ export default function ResetForm() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://ubsioneplus.vercel.app/api/auth';
+  const API_URL = import.meta.env.VITE_API_URL || 'https://web-kampus-9i8ega164-natars-projects.vercel.app';
 
   const handleReset = async () => {
     if (!newPassword || !confirmPassword) {
