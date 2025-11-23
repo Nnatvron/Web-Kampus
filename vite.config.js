@@ -9,7 +9,7 @@ export default ({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: env.VITE_API_URL || 'https://web-kampus-9i8ega164-natars-projects.vercel.app',
+          target: env.VITE_API_URL || 'https://backend-kampus.vercel.app/',
           changeOrigin: true,
           secure: true, // ubah ke true karena kamu pakai HTTPS
         },

@@ -1,24 +1,40 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // ⬅️ Tambah ini
-import { Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap } from 'lucide-react';
+import axios from 'axios';
+import {
+  Mail,
+  Lock,
+  ArrowLeft,
+  User,
+  Phone,
+  Eye,
+  EyeOff,
+  Check,
+  X,
+  GraduationCap,
+} from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
 
 export default function Login() {
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+
+  // ==================== LOGIN STATE ====================
   const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const [showPassword, setShowPassword] = useState(false);
+
+  // ==================== RESET STATE ====================
   const [showForgotPassword, setShowForgotPassword] = useState(false);
-  const [resetNim, setResetNim] = useState('');
   const [resetEmail, setResetEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
   const [resetError, setResetError] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
 
+  // ==================== REGISTER STATE ====================
   const [showRegister, setShowRegister] = useState(false);
   const [regNim, setRegNim] = useState('');
   const [regNama, setRegNama] = useState('');
@@ -28,168 +44,111 @@ export default function Login() {
   const [regConfirmPassword, setRegConfirmPassword] = useState('');
   const [regJurusan, setRegJurusan] = useState('');
   const [regJenjang, setRegJenjang] = useState('');
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
   const [regError, setRegError] = useState('');
   const [regSuccess, setRegSuccess] = useState('');
   const [regLoading, setRegLoading] = useState(false);
 
-  const [showRegPassword, setShowRegPassword] = useState(false);
-  const [showRegConfirmPassword, setShowRegConfirmPassword] = useState(false);
+  const API_URL = 'https://backend-kampus.vercel.app/';
 
-  const { login } = useContext(AuthContext);
-  const navigate = useNavigate();
+  // ==================== VALIDATION ====================
+  const passwordValidation = {
+    hasUpperCase: /[A-Z]/.test(regPassword),
+    hasNumber: /\d/.test(regPassword),
+    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(regPassword),
+    minLength: regPassword.length >= 6,
+  };
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://web-kampus-9i8ega164-natars-projects.vercel.app/api/auth';
+  const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // ==================== PASSWORD VALIDATION ====================
-  const validatePasswordStrength = (pass) => ({
-    hasUpperCase: /[A-Z]/.test(pass),
-    hasNumber: /\d/.test(pass),
-    hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(pass),
-    minLength: pass.length >= 6
-  });
-
-  const passwordValidation = validatePasswordStrength(regPassword);
-  const isPasswordValid = 
-    passwordValidation.hasUpperCase && 
-    passwordValidation.hasNumber && 
-    passwordValidation.hasSymbol && 
-    passwordValidation.minLength;
-
-  // ==================== LOGIN (Backend) ====================
+  // ==================== LOGIN HANDLER ====================
   const handleLogin = async () => {
-  if (!nim || !password) {
-    setError('NIM dan Password harus diisi!');
-    return;
-  }
+    if (!nim || !password) return setError('NIM dan Password wajib diisi!');
 
-  setLoading(true);
-  setError('');
+    setLoading(true);
+    setError('');
 
-  try {
-    const res = await axios.post(`${API_URL}/login`, { nim, password });
+    try {
+      const email = nim.includes('@') ? nim : `${nim}@gmail.com`;
 
-    login(res.data.token, res.data.user);
-    navigate('/dashboard');
-  } catch (err) {
-    const message = err.response?.data?.message || "Login gagal";
-    setError(message);
-  } finally {
-    setLoading(false);
-  }
-};
+      const res = await axios.post(`${API_URL}/login`, {
+        email,
+        password,
+      });
 
-  // ==================== FORGOT PASSWORD (Backend) ====================
-const handleForgotPassword = async () => {
-  if (!resetEmail) {
-    setResetError('Email harus diisi!');
-    return;
-  }
-
-  setResetLoading(true);
-  setResetError('');
-  setResetSuccess('');
-
-  try {
-if (!resetNim || !resetEmail) {
-  setResetError('NIM dan Email harus diisi!');
-  return;
-}
-
-const res = await axios.post(`${API_URL}/forgot-password`, { nim: resetNim, email: resetEmail });
-
-
-    setResetSuccess(res.data.message || "Link reset password telah dikirim ke email Anda!");
-    setResetEmail('');
-
-    setTimeout(() => {
-      setShowForgotPassword(false);
-      setResetSuccess('');
-    }, 3000);
-  } catch (err) {
-    const message = err.response?.data?.message || "Gagal mengirim email reset password";
-    setResetError(message);
-  } finally {
-    setResetLoading(false);
-  }
-};
-
-  // ==================== REGISTER (Backend) ====================
- const handleRegister = async () => {
-  if (!regNim || !regNama || !regEmail || !regPassword || !regConfirmPassword) {
-    setRegError('Semua field wajib harus diisi!');
-    return;
-  }
-
-  if (regPassword !== regConfirmPassword) {
-    setRegError('Password tidak cocok!');
-    return;
-  }
-
-  setRegLoading(true);
-  setRegError('');
-  setRegSuccess('');
-
-  try {
-    const res = await axios.post(`${API_URL}/register`, {
-      nim: regNim,
-      nama: regNama,
-      email: regEmail,
-      phone: regPhone,
-      jurusan: regJurusan || 'Belum Ditentukan',
-      jenjang: regJenjang || 'Belum Ditentukan',
-      password: regPassword
-    });
-
-    setRegSuccess(res.data.message || "Pendaftaran berhasil! Silakan login.");
-    setTimeout(() => {
-      setShowRegister(false);
-      setRegSuccess('');
-    }, 2000);
-  } catch (err) {
-    const message = err.response?.data?.message || "Registrasi gagal";
-    setRegError(message);
-  } finally {
-    setRegLoading(false);
-  }
-};
-
-  // ==================== ENTER KEY ====================
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      if (showForgotPassword) handleForgotPassword();
-      else if (showRegister) handleRegister();
-      else handleLogin();
+      login(res.data.token, res.data.user);
+      navigate('/dashboard');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login gagal.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ==================== TOGGLE VIEW ====================
-  const toggleForgotPassword = () => {
-    setShowForgotPassword(!showForgotPassword);
-    setShowRegister(false);
-    setError('');
-    setResetError('');
-    setResetSuccess('');
-    setResetNim('');
-    setResetEmail('');
-  };
+  // ==================== REGISTER HANDLER ====================
+  const handleRegister = async () => {
+    if (!regNim || !regNama || !regEmail || !regPassword || !regConfirmPassword)
+      return setRegError('Semua field bertanda * wajib diisi!');
 
-  const toggleRegister = () => {
-    setShowRegister(!showRegister);
-    setShowForgotPassword(false);
-    setError('');
+    if (regPassword !== regConfirmPassword)
+      return setRegError('Konfirmasi password tidak cocok!');
+
+    if (!isPasswordValid)
+      return setRegError('Password belum memenuhi standar keamanan!');
+
+    setRegLoading(true);
     setRegError('');
-    setRegSuccess('');
-    setRegNim('');
-    setRegNama('');
-    setRegEmail('');
-    setRegPhone('');
-    setRegPassword('');
-    setRegConfirmPassword('');
-    setRegJurusan('');
-    setRegJenjang('');
+
+    try {
+      const res = await axios.post(`${API_URL}/register`, {
+        email: regEmail,
+        password: regPassword,
+        nim: regNim,
+        nama: regNama,
+        phone: regPhone,
+        jurusan: regJurusan || 'Belum ditentukan',
+        jenjang: regJenjang || 'Belum ditentukan',
+      });
+
+      setRegSuccess(res.data.message || 'Pendaftaran berhasil!');
+      setTimeout(() => setShowRegister(false), 2000);
+    } catch (err) {
+      setRegError(err.response?.data?.message || 'Registrasi gagal.');
+    } finally {
+      setRegLoading(false);
+    }
   };
 
-  // ==================== RETURN JSX (Tidak diubah) ====================
+  // ==================== RESET PASSWORD ====================
+  const handleForgotPassword = async () => {
+    if (!resetEmail) return setResetError('Email wajib diisi!');
+
+    setResetLoading(true);
+    setResetError('');
+
+    try {
+      const res = await axios.post(`${API_URL}/forgot-password`, {
+        email: resetEmail,
+      });
+
+      setResetSuccess(res.data.message);
+      setResetEmail('');
+    } catch (err) {
+      setResetError(err.response?.data?.message || 'Gagal mengirim reset password.');
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key !== 'Enter') return;
+
+    if (showRegister) handleRegister();
+    else if (showForgotPassword) handleForgotPassword();
+    else handleLogin();
+  };
+
   return (
     <div className="login-wrapper">
       <div className="background-pattern">
@@ -198,18 +157,15 @@ const res = await axios.post(`${API_URL}/forgot-password`, { nim: resetNim, emai
 
       <div className="login-card">
         <div className="card-content">
+
+          {/* LOGO */}
           <div className="avatar-container">
             <img src="/picture/logo1.png" alt="Logo UBSI" width="200" />
           </div>
 
-          <h2 className="login-title">
-            {showForgotPassword ? '' : showRegister ? '' : ''}
-          </h2>
-
-          {/* ==================== LOGIN FORM ==================== */}
+          {/* ================= LOGIN UI ================= */}
           {!showForgotPassword && !showRegister && (
             <div className="form-container">
-              
               <div className="input-group">
                 <Mail className="input-icon" />
                 <input
@@ -230,288 +186,182 @@ const res = await axios.post(`${API_URL}/forgot-password`, { nim: resetNim, emai
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={loading}
                   className="input-field"
+                  disabled={loading}
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
                   className="password-toggle-icon"
-                  disabled={loading}
+                  onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
 
-              {error && (
-                <div className="error-message">
-                  {error}
-                </div>
-              )}
+              {error && <div className="error-message">{error}</div>}
 
-              <button
-                type="button"
-                onClick={handleLogin}
-                disabled={loading}
-                className="login-button"
-              >
-                {loading ? 'Loading...' : 'LOGIN'}
+              <button className="login-button" disabled={loading} onClick={handleLogin}>
+                {loading ? 'Memproses...' : 'LOGIN'}
               </button>
 
-              <button
-                type="button"
-                onClick={toggleForgotPassword}
-                className="forgot-password-link"
-              >
+              <button className="forgot-password-link" onClick={() => setShowForgotPassword(true)}>
                 Lupa Password?
               </button>
 
-              <button
-                type="button"
-                onClick={toggleRegister}
-                className="register-link"
-              >
-                Belum punya akun? <strong>Daftar di sini</strong>
+              <button className="register-link" onClick={() => setShowRegister(true)}>
+                Belum punya akun? <strong>Daftar</strong>
               </button>
             </div>
           )}
 
-          {/* ==================== FORGOT PASSWORD FORM ==================== */}
-{showForgotPassword && (
-  <div className="form-container">
-    <p className="forgot-password-info">
-      Masukkan NIM dan Email terdaftar Anda. Link reset password akan dikirim ke email.
-    </p>
-
-    <div className="input-group">
-      <Mail className="input-icon" />
-      <input
-        type="text"
-        placeholder="NIM"
-        value={resetNim}
-        onChange={(e) => setResetNim(e.target.value)}
-        disabled={resetLoading}
-        className="input-field"
-      />
-    </div>
-
-    <div className="input-group">
-      <Mail className="input-icon" />
-      <input
-        type="email"
-        placeholder="Email"
-        value={resetEmail}
-        onChange={(e) => setResetEmail(e.target.value)}
-        disabled={resetLoading}
-        className="input-field"
-      />
-    </div>
-
-    {resetError && <div className="error-message">{resetError}</div>}
-    {resetSuccess && <div className="success-message">{resetSuccess}</div>}
-
-    <button
-      type="button"
-      onClick={handleForgotPassword}
-      disabled={resetLoading}
-      className="login-button"
-    >
-      {resetLoading ? 'Mengirim...' : 'Kirim Link Reset'}
-    </button>
-
-    <button
-      type="button"
-      onClick={toggleForgotPassword}
-      className="back-to-login"
-      disabled={resetLoading}
-    >
-      <ArrowLeft size={16} />
-      Kembali ke Login
-    </button>
-  </div>
-)}
-
-          {/* ==================== REGISTER FORM ==================== */}
-          {showRegister && (
+          {/* ================= FORGOT PASSWORD UI ================= */}
+          {showForgotPassword && (
             <div className="form-container">
-              
               <p className="forgot-password-info">
-                Daftarkan akun baru untuk mengakses Portal Mahasiswa
+                Masukkan email akun Anda untuk reset password.
               </p>
 
               <div className="input-group">
                 <Mail className="input-icon" />
                 <input
-                  type="text"
-                  placeholder="NIM *"
-                  value={regNim}
-                  onChange={(e) => setRegNim(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field"
-                />
-              </div>
-
-              <div className="input-group">
-                <User className="input-icon" />
-                <input
-                  type="text"
-                  placeholder="Nama Lengkap *"
-                  value={regNama}
-                  onChange={(e) => setRegNama(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field"
-                />
-              </div>
-
-              <div className="input-group">
-                <Mail className="input-icon" />
-                <input
                   type="email"
-                  placeholder="Email *"
-                  value={regEmail}
-                  onChange={(e) => setRegEmail(e.target.value)}
-                  disabled={regLoading}
+                  placeholder="Email"
+                  value={resetEmail}
+                  onChange={(e) => setResetEmail(e.target.value)}
                   className="input-field"
                 />
               </div>
 
-              <div className="input-group">
-                <Phone className="input-icon" />
-                <input
-                  type="tel"
-                  placeholder="No. Telepon (Opsional)"
-                  value={regPhone}
-                  onChange={(e) => setRegPhone(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field"
-                />
-              </div>
+              {resetError && <div className="error-message">{resetError}</div>}
+              {resetSuccess && <div className="success-message">{resetSuccess}</div>}
 
-              <div className="input-group">
-                <User className="input-icon" />
-                <input
-                  type="text"
-                  placeholder="Jurusan (Opsional)"
-                  value={regJurusan}
-                  onChange={(e) => setRegJurusan(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field"
-                />
-              </div>
+              <button className="login-button" onClick={handleForgotPassword}>
+                {resetLoading ? 'Mengirim...' : 'Kirim Reset Password'}
+              </button>
 
-              {/* Jenjang Pendidikan Dropdown */}
+              <button className="back-to-login" onClick={() => setShowForgotPassword(false)}>
+                <ArrowLeft size={16} /> Kembali
+              </button>
+            </div>
+          )}
+
+          {/* ================= REGISTER UI ================= */}
+          {showRegister && (
+            <div className="form-container">
+              <p className="forgot-password-info">
+                Daftar akun baru untuk mengakses portal mahasiswa.
+              </p>
+
+              {/* FIELD INPUT REGISTER */}
+              {[
+                { icon: <User />, placeholder: 'NIM *', state: regNim, setState: setRegNim },
+                { icon: <User />, placeholder: 'Nama Lengkap *', state: regNama, setState: setRegNama },
+                { icon: <Mail />, placeholder: 'Email *', state: regEmail, setState: setRegEmail },
+                { icon: <Phone />, placeholder: 'No. Telepon (Opsional)', state: regPhone, setState: setRegPhone },
+                { icon: <User />, placeholder: 'Jurusan (Opsional)', state: regJurusan, setState: setRegJurusan },
+              ].map((item, i) => (
+                <div key={i} className="input-group">
+                  {item.icon}
+                  <input
+                    className="input-field"
+                    placeholder={item.placeholder}
+                    value={item.state}
+                    onChange={(e) => item.setState(e.target.value)}
+                    disabled={regLoading}
+                  />
+                </div>
+              ))}
+
+              {/* SELECT */}
               <div className="input-group">
                 <GraduationCap className="input-icon" />
                 <select
+                  className="input-field select-field"
                   value={regJenjang}
                   onChange={(e) => setRegJenjang(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field select-field"
                 >
-                  <option value="">Pilih Jenjang Pendidikan (Opsional)</option>
-                  <option value="D3">D3 - Diploma 3</option>
-                  <option value="S1">S1 - Sarjana</option>
-                  <option value="S2">S2 - Magister</option>
+                  <option value="">Pilih Jenjang (Opsional)</option>
+                  <option value="D3">D3</option>
+                  <option value="S1">S1</option>
+                  <option value="S2">S2</option>
                 </select>
               </div>
 
+              {/* PASSWORD */}
               <div className="input-group">
                 <Lock className="input-icon" />
                 <input
                   type={showRegPassword ? 'text' : 'password'}
                   placeholder="Password *"
+                  className="input-field"
                   value={regPassword}
                   onChange={(e) => setRegPassword(e.target.value)}
-                  disabled={regLoading}
-                  className="input-field"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowRegPassword(!showRegPassword)}
                   className="password-toggle-icon"
-                  disabled={regLoading}
+                  onClick={() => setShowRegPassword(!showRegPassword)}
                 >
-                  {showRegPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showRegPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
 
-              {/* Password Strength Indicator */}
+              {/* PASSWORD STRENGTH */}
               {regPassword && (
                 <div className="password-strength">
-                  <div className={`strength-item ${passwordValidation.minLength ? 'valid' : 'invalid'}`}>
-                    {passwordValidation.minLength ? <Check size={16} /> : <X size={16} />}
-                    <span>Minimal 6 karakter</span>
-                  </div>
-                  <div className={`strength-item ${passwordValidation.hasUpperCase ? 'valid' : 'invalid'}`}>
-                    {passwordValidation.hasUpperCase ? <Check size={16} /> : <X size={16} />}
-                    <span>Minimal 1 huruf besar</span>
-                  </div>
-                  <div className={`strength-item ${passwordValidation.hasNumber ? 'valid' : 'invalid'}`}>
-                    {passwordValidation.hasNumber ? <Check size={16} /> : <X size={16} />}
-                    <span>Minimal 1 angka</span>
-                  </div>
-                  <div className={`strength-item ${passwordValidation.hasSymbol ? 'valid' : 'invalid'}`}>
-                    {passwordValidation.hasSymbol ? <Check size={16} /> : <X size={16} />}
-                    <span>Minimal 1 simbol (!@#$%^&*)</span>
-                  </div>
+                  {Object.keys(passwordValidation).map((key, i) => (
+                    <div
+                      key={i}
+                      className={`strength-item ${
+                        passwordValidation[key] ? 'valid' : 'invalid'
+                      }`}
+                    >
+                      {passwordValidation[key] ? <Check size={16} /> : <X size={16} />}
+                      <span>
+                        {{
+                          minLength: 'Minimal 6 karakter',
+                          hasUpperCase: 'Minimal 1 huruf besar',
+                          hasNumber: 'Minimal 1 angka',
+                          hasSymbol: 'Minimal 1 simbol (!@#$%^&*)',
+                        }[key]}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               )}
 
+              {/* CONFIRM PASSWORD */}
               <div className="input-group">
                 <Lock className="input-icon" />
                 <input
                   type={showRegConfirmPassword ? 'text' : 'password'}
                   placeholder="Konfirmasi Password *"
+                  className="input-field"
                   value={regConfirmPassword}
                   onChange={(e) => setRegConfirmPassword(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={regLoading}
-                  className="input-field"
                 />
                 <button
                   type="button"
-                  onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
                   className="password-toggle-icon"
-                  disabled={regLoading}
+                  onClick={() => setShowRegConfirmPassword(!showRegConfirmPassword)}
                 >
-                  {showRegConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showRegConfirmPassword ? <EyeOff /> : <Eye />}
                 </button>
               </div>
 
-              {regError && (
-                <div className="error-message">
-                  {regError}
-                </div>
-              )}
+              {regError && <div className="error-message">{regError}</div>}
+              {regSuccess && <div className="success-message">{regSuccess}</div>}
 
-              {regSuccess && (
-                <div className="success-message">
-                  {regSuccess}
-                </div>
-              )}
-
-              <button
-                type="button"
-                onClick={handleRegister}
-                disabled={regLoading}
-                className="login-button"
-              >
+              <button className="login-button" onClick={handleRegister} disabled={regLoading}>
                 {regLoading ? 'Mendaftar...' : 'DAFTAR'}
               </button>
 
-              <button
-                type="button"
-                onClick={toggleRegister}
-                className="back-to-login"
-                disabled={regLoading} 
-              >
-                <ArrowLeft size={16} />
-                Sudah punya akun? Login
+              <button className="back-to-login" onClick={() => setShowRegister(false)}>
+                <ArrowLeft size={16} /> Sudah punya akun? Login
               </button>
             </div>
           )}
-
         </div>
       </div>
     </div>
