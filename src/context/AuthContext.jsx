@@ -9,19 +9,25 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   // ================== AUTO LOGIN ==================
-  useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+useEffect(() => {
+  const storedToken = localStorage.getItem('token');
+  const storedUser = localStorage.getItem('user');
 
-    if (storedUser) {
+  if (storedUser) {
+    try {
       setUser(JSON.parse(storedUser));
+    } catch (err) {
+      console.warn("Failed to parse user from localStorage:", err);
+      localStorage.removeItem('user'); // hapus kalau rusak
     }
-    if (storedToken) {
-      setToken(storedToken);
-    }
+  }
 
-    setLoading(false);
-  }, []);
+  if (storedToken) {
+    setToken(storedToken);
+  }
+
+  setLoading(false);
+}, []);
 
   // ================== LOGIN ==================
   const login = (newToken, userData) => {
