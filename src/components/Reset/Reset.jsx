@@ -1,5 +1,5 @@
 // src/components/Reset/ResetForm.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Check, X, Lock } from "lucide-react";
 import { auth } from "/firebase"; // pastikan path sesuai
@@ -33,6 +33,7 @@ export default function ResetForm() {
     setError("");
     setSuccess("");
 
+    if (!oobCode) return setError("Link reset password tidak valid.");
     if (!newPassword || !confirmPassword) return setError("Semua field wajib diisi!");
     if (newPassword !== confirmPassword) return setError("Password tidak cocok!");
     if (!isPasswordValid) return setError("Password belum memenuhi syarat keamanan!");
@@ -41,14 +42,22 @@ export default function ResetForm() {
     try {
       await confirmPasswordReset(auth, oobCode, newPassword);
       setSuccess("Password berhasil direset! Anda akan diarahkan ke login...");
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 3000);
     } catch (err) {
       console.error(err);
-      setError(
-        err.code === "auth/expired-action-code"
-          ? "Link reset password sudah kadaluarsa."
-          : "Link reset password tidak valid."
-      );
+      switch (err.code) {
+        case "auth/expired-action-code":
+          setError("Link reset password sudah kadaluarsa.");
+          break;
+        case "auth/invalid-action-code":
+          setError("Link reset password tidak valid.");
+          break;
+        case "auth/weak-password":
+          setError("Password terlalu lemah.");
+          break;
+        default:
+          setError("Terjadi kesalahan. Coba lagi.");
+      }
     } finally {
       setLoading(false);
     }

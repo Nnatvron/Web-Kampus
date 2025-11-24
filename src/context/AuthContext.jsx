@@ -13,16 +13,16 @@ useEffect(() => {
   const storedToken = localStorage.getItem('token');
   const storedUser = localStorage.getItem('user');
 
-  if (storedUser) {
+  if (storedUser && storedUser !== "undefined") {
     try {
       setUser(JSON.parse(storedUser));
     } catch (err) {
       console.warn("Failed to parse user from localStorage:", err);
-      localStorage.removeItem('user'); // hapus kalau rusak
+      localStorage.removeItem('user');
     }
   }
 
-  if (storedToken) {
+  if (storedToken && storedToken !== "undefined") {
     setToken(storedToken);
   }
 
