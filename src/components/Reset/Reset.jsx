@@ -8,9 +8,9 @@ import { confirmPasswordReset } from "firebase/auth";
 export default function ResetForm() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const oobCode = searchParams.get("oobCode"); // ambil token dari URL
+  const oobCode = searchParams.get("oobCode"); // token reset dari URL
 
-  // ==================== STATE ====================
+  // ===== STATE =====
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -19,7 +19,7 @@ export default function ResetForm() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ==================== PASSWORD VALIDATION ====================
+  // ===== PASSWORD VALIDATION =====
   const passwordValidation = {
     minLength: newPassword.length >= 6,
     hasUpperCase: /[A-Z]/.test(newPassword),
@@ -28,14 +28,14 @@ export default function ResetForm() {
   };
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // ==================== HANDLER RESET PASSWORD ====================
+  // ===== HANDLE RESET =====
   const handleReset = async () => {
     setError("");
     setSuccess("");
 
     if (!newPassword || !confirmPassword) return setError("Semua field wajib diisi!");
     if (newPassword !== confirmPassword) return setError("Password tidak cocok!");
-    if (!isPasswordValid) return setError("Password tidak memenuhi syarat keamanan!");
+    if (!isPasswordValid) return setError("Password belum memenuhi syarat keamanan!");
 
     setLoading(true);
     try {
@@ -44,13 +44,16 @@ export default function ResetForm() {
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       console.error(err);
-      setError("Link reset password tidak valid atau sudah kadaluarsa.");
+      setError(
+        err.code === "auth/expired-action-code"
+          ? "Link reset password sudah kadaluarsa."
+          : "Link reset password tidak valid."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // ==================== RENDER ====================
   return (
     <div className="auth-container">
       <h2 className="form-title">Reset Password</h2>
@@ -93,7 +96,7 @@ export default function ResetForm() {
         </button>
       </div>
 
-      {/* CHECKLIST PASSWORD */}
+      {/* PASSWORD STRENGTH CHECKLIST */}
       {newPassword && (
         <div className="password-strength">
           {Object.entries(passwordValidation).map(([key, valid], idx) => {

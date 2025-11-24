@@ -2,9 +2,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import {
-  Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap
-} from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone, GraduationCap, Check, X } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
 
@@ -14,14 +12,14 @@ export default function Login() {
 
   const API_URL = 'https://backend-kampus.vercel.app/api/auth';
 
-  // ==================== STATE LOGIN ====================
+  // ===== STATE LOGIN =====
   const [nim, setNim] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // ==================== STATE REGISTER ====================
+  // ===== STATE REGISTER =====
   const [showRegister, setShowRegister] = useState(false);
   const [regForm, setRegForm] = useState({
     nim: '', nama: '', email: '', phone: '', jurusan: '', jenjang: '', password: '', confirmPassword: ''
@@ -32,14 +30,14 @@ export default function Login() {
   const [regSuccess, setRegSuccess] = useState('');
   const [regLoading, setRegLoading] = useState(false);
 
-  // ==================== STATE FORGOT PASSWORD ====================
+  // ===== STATE FORGOT PASSWORD =====
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetError, setResetError] = useState('');
   const [resetSuccess, setResetSuccess] = useState('');
   const [resetLoading, setResetLoading] = useState(false);
 
-  // ==================== PASSWORD VALIDATION ====================
+  // ===== PASSWORD VALIDATION =====
   const passwordValidation = {
     minLength: regForm.password.length >= 6,
     hasUpperCase: /[A-Z]/.test(regForm.password),
@@ -48,27 +46,30 @@ export default function Login() {
   };
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // ==================== HANDLER LOGIN ====================
+  // ===== HANDLER LOGIN =====
   const handleLogin = async () => {
     if (!nim || !password) return setError('NIM dan Password wajib diisi!');
     setLoading(true);
     setError('');
 
     try {
+      // jika nim bukan email, format jadi email
       const email = nim.includes('@') ? nim : `${nim}@gmail.com`;
       const res = await axios.post(`${API_URL}/login`, { email, password });
 
-      // login ke AuthContext
-      login(res.data.token || null, res.data.user);
+      // login di context
+      login(res.data.token, res.data.user);
+
       navigate('/dashboard');
     } catch (err) {
+      console.error(err);
       setError(err.response?.data?.message || 'Login gagal.');
     } finally {
       setLoading(false);
     }
   };
 
-  // ==================== HANDLER REGISTER ====================
+  // ===== HANDLER REGISTER =====
   const handleRegister = async () => {
     const { nim, nama, email, password, confirmPassword, phone, jurusan, jenjang } = regForm;
 
@@ -83,18 +84,19 @@ export default function Login() {
       const res = await axios.post(`${API_URL}/register`, {
         nim, nama, email, password, phone,
         jurusan: jurusan || 'Belum ditentukan',
-        jenjang: jenjang || 'Belum ditentukan',
+        jenjang: jenjang || 'Belum ditentukan'
       });
       setRegSuccess(res.data.message || 'Pendaftaran berhasil!');
       setTimeout(() => setShowRegister(false), 2000);
     } catch (err) {
+      console.error(err);
       setRegError(err.response?.data?.message || 'Registrasi gagal.');
     } finally {
       setRegLoading(false);
     }
   };
 
-  // ==================== HANDLER FORGOT PASSWORD ====================
+  // ===== HANDLER FORGOT PASSWORD =====
   const handleForgotPassword = async () => {
     if (!resetEmail) return setResetError('Email wajib diisi!');
     setResetLoading(true);
@@ -104,13 +106,14 @@ export default function Login() {
       setResetSuccess(res.data.message);
       setResetEmail('');
     } catch (err) {
+      console.error(err);
       setResetError(err.response?.data?.message || 'Gagal mengirim reset password.');
     } finally {
       setResetLoading(false);
     }
   };
 
-  // ==================== HANDLE ENTER KEY ====================
+  // ===== HANDLE ENTER KEY =====
   const handleKeyPress = (e) => {
     if (e.key !== 'Enter') return;
     if (showRegister) handleRegister();
@@ -118,18 +121,15 @@ export default function Login() {
     else handleLogin();
   };
 
-  // ==================== RENDER ====================
   return (
     <div className="login-wrapper">
-      <div className="background-pattern"><div className="pattern-dots" /></div>
-
       <div className="login-card">
         <div className="card-content">
           <div className="avatar-container">
             <img src="/picture/logo1.png" alt="Logo UBSI" width={200} />
           </div>
 
-          {/* ===== LOGIN UI ===== */}
+          {/* LOGIN */}
           {!showRegister && !showForgotPassword && (
             <div className="form-container">
               <div className="input-group">
@@ -140,8 +140,8 @@ export default function Login() {
                   value={nim}
                   onChange={(e) => setNim(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  disabled={loading}
                   className="input-field"
+                  disabled={loading}
                 />
               </div>
 
@@ -177,7 +177,7 @@ export default function Login() {
             </div>
           )}
 
-          {/* ===== FORGOT PASSWORD UI ===== */}
+          {/* FORGOT PASSWORD */}
           {showForgotPassword && (
             <div className="form-container">
               <p>Masukkan email akun Anda untuk reset password.</p>
@@ -192,21 +192,18 @@ export default function Login() {
                   className="input-field"
                 />
               </div>
-
               {resetError && <div className="error-message">{resetError}</div>}
               {resetSuccess && <div className="success-message">{resetSuccess}</div>}
-
               <button className="login-button" onClick={handleForgotPassword} disabled={resetLoading}>
                 {resetLoading ? 'Mengirim...' : 'Kirim Reset Password'}
               </button>
-
               <button className="back-to-login" onClick={() => setShowForgotPassword(false)}>
                 <ArrowLeft size={16} /> Kembali
               </button>
             </div>
           )}
 
-          {/* ===== REGISTER UI ===== */}
+          {/* REGISTER */}
           {showRegister && (
             <div className="form-container">
               {['nim','nama','email','phone','jurusan'].map((field,i) => {
@@ -226,7 +223,6 @@ export default function Login() {
                 );
               })}
 
-              {/* Jenjang */}
               <div className="input-group">
                 <GraduationCap className="input-icon" />
                 <select
@@ -241,7 +237,6 @@ export default function Login() {
                 </select>
               </div>
 
-              {/* Password */}
               <div className="input-group">
                 <Lock className="input-icon" />
                 <input
@@ -256,7 +251,6 @@ export default function Login() {
                 </button>
               </div>
 
-              {/* Password Strength */}
               {regForm.password && (
                 <div className="password-strength">
                   {Object.keys(passwordValidation).map((key,i) => (
@@ -275,7 +269,6 @@ export default function Login() {
                 </div>
               )}
 
-              {/* Confirm Password */}
               <div className="input-group">
                 <Lock className="input-icon" />
                 <input
