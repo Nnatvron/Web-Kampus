@@ -8,26 +8,30 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Saat pertama load, cek localStorage untuk auto login
+  // ================== AUTO LOGIN ==================
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
 
-    if (storedToken && storedUser) {
-      setToken(storedToken);
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
+    if (storedToken) {
+      setToken(storedToken);
+    }
 
-    setLoading(false); // selesai cek login
+    setLoading(false);
   }, []);
 
+  // ================== LOGIN ==================
   const login = (newToken, userData) => {
     setToken(newToken);
     setUser(userData);
-    localStorage.setItem('token', newToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+    if (newToken) localStorage.setItem('token', newToken);
+    if (userData) localStorage.setItem('user', JSON.stringify(userData));
   };
 
+  // ================== LOGOUT ==================
   const logout = () => {
     setToken(null);
     setUser(null);
@@ -35,10 +39,13 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('user');
   };
 
-  const isAuthenticated = !!token;
+  // Kalau token atau user ada, dianggap authenticated
+  const isAuthenticated = !!token || !!user;
 
   return (
-    <AuthContext.Provider value={{ token, user, isAuthenticated, login, logout, loading }}>
+    <AuthContext.Provider
+      value={{ token, user, isAuthenticated, login, logout, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );

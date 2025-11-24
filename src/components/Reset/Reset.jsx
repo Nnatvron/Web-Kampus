@@ -38,7 +38,6 @@ export default function ResetForm() {
     if (!isPasswordValid) return setError("Password tidak memenuhi syarat keamanan!");
 
     setLoading(true);
-
     try {
       await confirmPasswordReset(auth, oobCode, newPassword);
       setSuccess("Password berhasil direset! Anda akan diarahkan ke login...");
@@ -51,6 +50,7 @@ export default function ResetForm() {
     }
   };
 
+  // ==================== RENDER ====================
   return (
     <div className="auth-container">
       <h2 className="form-title">Reset Password</h2>
@@ -67,8 +67,8 @@ export default function ResetForm() {
         />
         <button
           type="button"
-          onClick={() => setShowPassword(!showPassword)}
           className="password-toggle-icon"
+          onClick={() => setShowPassword(!showPassword)}
         >
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
@@ -86,8 +86,8 @@ export default function ResetForm() {
         />
         <button
           type="button"
-          onClick={() => setShowConfirm(!showConfirm)}
           className="password-toggle-icon"
+          onClick={() => setShowConfirm(!showConfirm)}
         >
           {showConfirm ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
@@ -117,7 +117,7 @@ export default function ResetForm() {
       {error && <p className="error-message">{error}</p>}
       {success && <p className="success-message">{success}</p>}
 
-      <button className="login-button" disabled={loading} onClick={handleReset}>
+      <button className="login-button" onClick={handleReset} disabled={loading}>
         {loading ? "Memproses..." : "Reset Password"}
       </button>
     </div>

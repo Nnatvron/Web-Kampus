@@ -3,7 +3,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
-  Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap,
+  Mail, Lock, ArrowLeft, User, Phone, Eye, EyeOff, Check, X, GraduationCap
 } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
@@ -57,7 +57,9 @@ export default function Login() {
     try {
       const email = nim.includes('@') ? nim : `${nim}@gmail.com`;
       const res = await axios.post(`${API_URL}/login`, { email, password });
-      login(res.data.token || null, res.data.user); // backend bisa kirim token
+
+      // login ke AuthContext
+      login(res.data.token || null, res.data.user);
       navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Login gagal.');
@@ -79,7 +81,9 @@ export default function Login() {
     setRegError('');
     try {
       const res = await axios.post(`${API_URL}/register`, {
-        nim, nama, email, password, phone, jurusan: jurusan || 'Belum ditentukan', jenjang: jenjang || 'Belum ditentukan',
+        nim, nama, email, password, phone,
+        jurusan: jurusan || 'Belum ditentukan',
+        jenjang: jenjang || 'Belum ditentukan',
       });
       setRegSuccess(res.data.message || 'Pendaftaran berhasil!');
       setTimeout(() => setShowRegister(false), 2000);
@@ -118,6 +122,7 @@ export default function Login() {
   return (
     <div className="login-wrapper">
       <div className="background-pattern"><div className="pattern-dots" /></div>
+
       <div className="login-card">
         <div className="card-content">
           <div className="avatar-container">
@@ -204,7 +209,6 @@ export default function Login() {
           {/* ===== REGISTER UI ===== */}
           {showRegister && (
             <div className="form-container">
-
               {['nim','nama','email','phone','jurusan'].map((field,i) => {
                 const icons = { nim: <User />, nama: <User />, email: <Mail />, phone: <Phone />, jurusan: <User /> };
                 const placeholders = { nim: 'NIM *', nama: 'Nama Lengkap *', email: 'Email *', phone: 'No. Telepon (Opsional)', jurusan: 'Jurusan (Opsional)' };
