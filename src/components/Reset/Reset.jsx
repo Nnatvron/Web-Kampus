@@ -1,38 +1,23 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+// src/components/Reset/ResetForm.jsx
+import { useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Check, X, Lock } from "lucide-react";
+import { auth } from "/firebase"; // pastikan path sesuai
+import { confirmPasswordReset } from "firebase/auth";
 
 export default function ResetForm() {
-  const { token } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const oobCode = searchParams.get("oobCode"); // ambil token dari URL
 
+  // ==================== STATE ====================
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const [validToken, setValidToken] = useState(null);
-
-  const API_URL =
-    import.meta.env.VITE_API_URL ||
-    "https://backend-kampus.vercel.app/";
-
-  // ==================== CEK TOKEN VALID ATAU NGGAK ====================
-  useEffect(() => {
-    const checkToken = async () => {
-      try {
-        await axios.get(`${API_URL}/verify-reset-token/${token}`);
-        setValidToken(true);
-      } catch {
-        setValidToken(false);
-      }
-    };
-    checkToken();
-  }, [API_URL, token]);
 
   // ==================== PASSWORD VALIDATION ====================
   const passwordValidation = {
@@ -41,60 +26,36 @@ export default function ResetForm() {
     hasNumber: /\d/.test(newPassword),
     hasSymbol: /[!@#$%^&*(),.?":{}|<>]/.test(newPassword),
   };
-
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
+  // ==================== HANDLER RESET PASSWORD ====================
   const handleReset = async () => {
     setError("");
     setSuccess("");
 
-    if (!newPassword || !confirmPassword)
-      return setError("Semua field wajib diisi!");
-
-    if (newPassword !== confirmPassword)
-      return setError("Password tidak cocok!");
-
-    if (!isPasswordValid)
-      return setError("Password tidak memenuhi syarat keamanan!");
+    if (!newPassword || !confirmPassword) return setError("Semua field wajib diisi!");
+    if (newPassword !== confirmPassword) return setError("Password tidak cocok!");
+    if (!isPasswordValid) return setError("Password tidak memenuhi syarat keamanan!");
 
     setLoading(true);
 
     try {
-      const res = await axios.post(`${API_URL}/reset-password/${token}`, {
-        password: newPassword,
-      });
-
-      setSuccess(res.data.message || "Password berhasil direset! Anda akan diarahkan ke login...");
-      
+      await confirmPasswordReset(auth, oobCode, newPassword);
+      setSuccess("Password berhasil direset! Anda akan diarahkan ke login...");
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      setError(err.response?.data?.message || "Token tidak valid atau expired.");
+      console.error(err);
+      setError("Link reset password tidak valid atau sudah kadaluarsa.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ==================== HANDLING TOKEN INVALID ====================
-  if (validToken === false)
-    return (
-      <div className="auth-container">
-        <h2 className="form-title">Token Tidak Valid</h2>
-        <p className="error-message">
-          Link reset password kamu sudah kedaluwarsa atau tidak valid.
-        </p>
-        <button className="login-button" onClick={() => navigate("/forgot-password")}>
-          Kirim Ulang Email Reset
-        </button>
-      </div>
-    );
-
-  if (validToken === null) return <p style={{ textAlign: "center" }}>Memvalidasi token...</p>;
-
   return (
     <div className="auth-container">
       <h2 className="form-title">Reset Password</h2>
 
-      {/* ===== PASSWORD BARU ===== */}
+      {/* PASSWORD BARU */}
       <div className="input-group">
         <Lock className="input-icon" />
         <input
@@ -113,7 +74,7 @@ export default function ResetForm() {
         </button>
       </div>
 
-      {/* ===== CONFIRM PASSWORD ===== */}
+      {/* KONFIRMASI PASSWORD */}
       <div className="input-group">
         <Lock className="input-icon" />
         <input
@@ -132,28 +93,27 @@ export default function ResetForm() {
         </button>
       </div>
 
-      {/* ==================== PASSWORD CHECKLIST ==================== */}
+      {/* CHECKLIST PASSWORD */}
       {newPassword && (
         <div className="password-strength">
-          <div className={`strength-item ${passwordValidation.minLength ? "valid" : "invalid"}`}>
-            {passwordValidation.minLength ? <Check size={16} /> : <X size={16} />}
-            <span>Minimal 6 karakter</span>
-          </div>
-          <div className={`strength-item ${passwordValidation.hasUpperCase ? "valid" : "invalid"}`}>
-            {passwordValidation.hasUpperCase ? <Check size={16} /> : <X size={16} />}
-            <span>Minimal 1 huruf besar (A-Z)</span>
-          </div>
-          <div className={`strength-item ${passwordValidation.hasNumber ? "valid" : "invalid"}`}>
-            {passwordValidation.hasNumber ? <Check size={16} /> : <X size={16} />}
-            <span>Minimal 1 angka</span>
-          </div>
-          <div className={`strength-item ${passwordValidation.hasSymbol ? "valid" : "invalid"}`}>
-            {passwordValidation.hasSymbol ? <Check size={16} /> : <X size={16} />}
-            <span>Minimal 1 simbol (!@#$%^&*)</span>
-          </div>
+          {Object.entries(passwordValidation).map(([key, valid], idx) => {
+            const labels = {
+              minLength: "Minimal 6 karakter",
+              hasUpperCase: "Minimal 1 huruf besar (A-Z)",
+              hasNumber: "Minimal 1 angka",
+              hasSymbol: "Minimal 1 simbol (!@#$%^&*)",
+            };
+            return (
+              <div key={idx} className={`strength-item ${valid ? "valid" : "invalid"}`}>
+                {valid ? <Check size={16} /> : <X size={16} />}
+                <span>{labels[key]}</span>
+              </div>
+            );
+          })}
         </div>
       )}
 
+      {/* ERROR / SUCCESS */}
       {error && <p className="error-message">{error}</p>}
       {success && <p className="success-message">{success}</p>}
 

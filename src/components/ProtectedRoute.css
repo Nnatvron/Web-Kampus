@@ -1,0 +1,25 @@
+/* src/components/ProtectedRoute.css */
+.loader-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1e0836 0%, #4a6fa5 100%);
+  color: white;
+  font-family: sans-serif;
+}
+
+.loader {
+  width: 50px;
+  height: 50px;
+  border: 6px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
