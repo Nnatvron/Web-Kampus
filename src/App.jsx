@@ -4,7 +4,6 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './components/Login/Login';
 import Dashboard from './Dashboard/Dashboard';
 import ResetForm from './components/Reset/Reset';
-
 import Loader from './components/Loader/Loader';  // Tambahin Loader
 import { useState, useEffect } from 'react';
 
@@ -31,7 +30,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           
           {/* Public Route - Reset Password */}
-          <Route path="/reset-password/:token" element={<ResetForm />} />
+          <Route path="/reset" element={<ResetForm />} />
 
           {/* Protected Route - Dashboard */}
           <Route 

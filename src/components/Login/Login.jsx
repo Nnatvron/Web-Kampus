@@ -10,7 +10,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const API_URL = 'https://backend-kampus-production.up.railway.app/';
+  const API_URL = 'https://backend-kampus-production.up.railway.app';
 
   // ===== STATE LOGIN =====
   const [nim, setNim] = useState('');
@@ -55,7 +55,7 @@ export default function Login() {
     try {
       // jika nim bukan email, format jadi email
       const email = nim.includes('@') ? nim : `${nim}@gmail.com`;
-      const res = await axios.post(`${API_URL}/login`, { email, password });
+      const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
 
       // login di context
       login(res.data.token, res.data.user);
@@ -81,7 +81,7 @@ export default function Login() {
     setRegLoading(true);
     setRegError('');
     try {
-      const res = await axios.post(`${API_URL}/register`, {
+      const res = await axios.post(`${API_URL}/api/auth/register`, {
         nim, nama, email, password, phone,
         jurusan: jurusan || 'Belum ditentukan',
         jenjang: jenjang || 'Belum ditentukan'
@@ -102,7 +102,7 @@ export default function Login() {
     setResetLoading(true);
     setResetError('');
     try {
-      const res = await axios.post(`${API_URL}/forgot-password`, { email: resetEmail });
+      const res = await axios.post(`${API_URL}/api/auth/forgot-password`, { email: resetEmail });
       setResetSuccess(res.data.message);
       setResetEmail('');
     } catch (err) {
