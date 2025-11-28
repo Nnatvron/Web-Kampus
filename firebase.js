@@ -10,6 +10,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyA0y_oluRBmxIB5vnxn12wFNjKKOF4AkvM",
   authDomain: "ubsioneplus.firebaseapp.com",
   projectId: "ubsioneplus",
+  storageBucket: "ubsioneplus.firebasestorage.app",
+  messagingSenderId: "718011167278",
+  appId: "1:718011167278:web:81c47becb50997ac44e5bf",
+  measurementId: "G-2W4L6JVDX7"
 };
 
 // Initialize app
