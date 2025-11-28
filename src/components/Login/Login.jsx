@@ -10,7 +10,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
 
-  const API_URL = 'https://backend-kampus.vercel.app/api/auth';
+  const API_URL = 'https://backend-kampus-production.up.railway.app/';
 
   // ===== STATE LOGIN =====
   const [nim, setNim] = useState('');
