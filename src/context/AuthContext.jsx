@@ -8,59 +8,113 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // ================== AUTO LOGIN ==================
+  // =====================
+  // AUTO LOAD USER
+  // =====================
   useEffect(() => {
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
+    try {
+      const storedUser = localStorage.getItem("authUser");
+      const storedToken = localStorage.getItem("authToken");
 
-    if (storedUser && storedUser !== "undefined") {
-      try {
+      if (storedUser) {
         setUser(JSON.parse(storedUser));
-      } catch (err) {
-        localStorage.removeItem('user');
       }
-    }
 
-    if (storedToken && storedToken !== "undefined") {
-      setToken(storedToken);
+      if (storedToken) {
+        setToken(storedToken);
+      }
+    } catch (err) {
+      console.error("Failed to parse stored user:", err);
+      localStorage.removeItem("authUser");
+      localStorage.removeItem("authToken");
     }
 
     setLoading(false);
   }, []);
 
-  // ================== LOGIN (LOCAL / DUMMY) ==================
-  const login = async (email, password) => {
-    // Dummy user
-    const dummyUser = {
-      id: 1,
-      name: "User Lokal",
-      email: email
-    };
+  // =====================
+  // REGISTER USER
+  // =====================
+  const register = (data) => {
+    /**
+     * data harus berisi:
+     * {
+     *   nama,
+     *   nim,
+     *   jurusan,
+     *   semester,
+     *   jenjang,
+     *   email,
+     *   password
+     * }
+     */
 
-    const dummyToken = "dummy-local-token-123";
+    const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
 
-    setUser(dummyUser);
+    const isExist = savedUsers.some((u) => u.email === data.email);
+
+    if (isExist) {
+      return { success: false, message: "Email sudah terdaftar!" };
+    }
+
+    savedUsers.push(data);
+
+    localStorage.setItem("users", JSON.stringify(savedUsers));
+
+    return { success: true };
+  };
+
+  // =====================
+  // LOGIN USER
+  // =====================
+  const login = (email, password) => {
+    const savedUsers = JSON.parse(localStorage.getItem("users")) || [];
+
+    const found = savedUsers.find(
+      (u) => u.email === email && u.password === password
+    );
+
+    if (!found) {
+      return { success: false, message: "Email atau password salah!" };
+    }
+
+    const dummyToken = "local-token-" + Date.now();
+
+    setUser(found);
     setToken(dummyToken);
 
-    localStorage.setItem("user", JSON.stringify(dummyUser));
-    localStorage.setItem("token", dummyToken);
+    localStorage.setItem("authUser", JSON.stringify(found));
+    localStorage.setItem("authToken", dummyToken);
 
-    return { success: true, user: dummyUser };
+    return { success: true, user: found };
   };
 
-  // ================== LOGOUT ==================
+  // =====================
+  // LOGOUT
+  // =====================
   const logout = () => {
-    setToken(null);
     setUser(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    setToken(null);
+    localStorage.removeItem("authUser");
+    localStorage.removeItem("authToken");
   };
 
-  const isAuthenticated = !!token || !!user;
+  // =====================
+  // AUTH CHECK
+  // =====================
+  const isAuthenticated = Boolean(user && token);
 
   return (
     <AuthContext.Provider
-      value={{ token, user, isAuthenticated, login, logout, loading }}
+      value={{
+        user,
+        token,
+        loading,
+        isAuthenticated,
+        register,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

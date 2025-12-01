@@ -47,25 +47,34 @@ export default function Login() {
   const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
 
   // ===== HANDLER LOGIN (LOCAL) =====
-  const handleLogin = async () => {
-    if (!nim || !password) return setError('NIM dan Password wajib diisi!');
-    setLoading(true);
-    setError('');
+const handleLogin = async () => {
+  if (!nim || !password) return setError('NIM dan Password wajib diisi!');
+  setLoading(true);
+  setError('');
 
-    setTimeout(() => {
-      const user = localUsers.find(u => (u.nim === nim || u.email === nim) && u.password === password);
+  setTimeout(() => {
+    const user = localUsers.find(u => 
+      (u.nim === nim || u.email === nim) && u.password === password
+    );
 
-      if (!user) {
-        setError("NIM / Password salah atau akun belum terdaftar.");
-        setLoading(false);
-        return;
-      }
-
-      login("dummy-token", user);
-      navigate('/dashboard');
+    if (!user) {
+      setError("NIM / Password salah atau akun belum terdaftar.");
       setLoading(false);
-    }, 700);
-  };
+      return;
+    }
+
+    // Ini yang benar!
+    const result = login(user.email, user.password);
+
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.message);
+    }
+
+    setLoading(false);
+  }, 700);
+};
 
   // ===== HANDLER REGISTER (LOCAL) =====
   const handleRegister = () => {
