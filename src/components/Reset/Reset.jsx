@@ -1,10 +1,14 @@
 // src/components/Reset/ResetForm.jsx
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Eye, EyeOff, Check, X, Lock } from "lucide-react";
+import { auth } from "/firebase"; // pastikan path sesuai
+import { confirmPasswordReset } from "firebase/auth";
 
 export default function ResetForm() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const oobCode = searchParams.get("oobCode"); // token reset dari URL
 
   // ===== STATE =====
   const [newPassword, setNewPassword] = useState("");
@@ -15,9 +19,6 @@ export default function ResetForm() {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // ===== FAKE LOCAL DATABASE =====
-  const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
-
   // ===== PASSWORD VALIDATION =====
   const passwordValidation = {
     minLength: newPassword.length >= 6,
@@ -27,40 +28,39 @@ export default function ResetForm() {
   };
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // ===== RESET LOCAL PASSWORD =====
-  const handleReset = () => {
+  // ===== HANDLE RESET =====
+  const handleReset = async () => {
     setError("");
     setSuccess("");
 
-    const storedEmail = localStorage.getItem("resetEmail"); 
-    if (!storedEmail) return setError("Tidak ada permintaan reset password.");
-
-    if (!newPassword || !confirmPassword)
-      return setError("Semua field wajib diisi!");
-    if (newPassword !== confirmPassword)
-      return setError("Password tidak cocok!");
-    if (!isPasswordValid)
-      return setError("Password belum memenuhi syarat keamanan!");
+    if (!oobCode) return setError("Link reset password tidak valid.");
+    if (!newPassword || !confirmPassword) return setError("Semua field wajib diisi!");
+    if (newPassword !== confirmPassword) return setError("Password tidak cocok!");
+    if (!isPasswordValid) return setError("Password belum memenuhi syarat keamanan!");
 
     setLoading(true);
-
-    setTimeout(() => {
-      const updatedUsers = localUsers.map(user =>
-        user.email === storedEmail
-          ? { ...user, password: newPassword }
-          : user
-      );
-
-      localStorage.setItem("users", JSON.stringify(updatedUsers));
-
+    try {
+      await confirmPasswordReset(auth, oobCode, newPassword);
       setSuccess("Password berhasil direset! Anda akan diarahkan ke login...");
-
-      // hapus flag email reset
-      localStorage.removeItem("resetEmail");
-
-      setTimeout(() => navigate("/login"), 2000);
+      setTimeout(() => navigate("/login"), 3000);
+    } catch (err) {
+      console.error(err);
+      switch (err.code) {
+        case "auth/expired-action-code":
+          setError("Link reset password sudah kadaluarsa.");
+          break;
+        case "auth/invalid-action-code":
+          setError("Link reset password tidak valid.");
+          break;
+        case "auth/weak-password":
+          setError("Password terlalu lemah.");
+          break;
+        default:
+          setError("Terjadi kesalahan. Coba lagi.");
+      }
+    } finally {
       setLoading(false);
-    }, 800);
+    }
   };
 
   return (
@@ -105,7 +105,7 @@ export default function ResetForm() {
         </button>
       </div>
 
-      {/* PASSWORD CHECKLIST */}
+      {/* PASSWORD STRENGTH CHECKLIST */}
       {newPassword && (
         <div className="password-strength">
           {Object.entries(passwordValidation).map(([key, valid], idx) => {

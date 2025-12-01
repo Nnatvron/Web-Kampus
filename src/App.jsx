@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";  // ⬅️ WAJIB ADA
 import Dashboard from "./Dashboard/Dashboard";
 import ResetForm from "./components/Reset/Reset";
 import Loader from "./components/Loader/Loader";
@@ -24,13 +25,12 @@ function App() {
       <AuthProvider>
         <Routes>
 
-          {/* Public Route - Login */}
+          {/* Public */}
           <Route path="/login" element={<Login />} />
-
-          {/* Public Route - Reset */}
+          <Route path="/register" element={<Register />} />  {/* ⬅️ ini */}
           <Route path="/reset" element={<ResetForm />} />
 
-          {/* Protected Route */}
+          {/* Protected */}
           <Route
             path="/dashboard"
             element={
@@ -42,8 +42,6 @@ function App() {
 
           {/* Default */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-
-          {/* 404 */}
           <Route path="*" element={<Navigate to="/login" replace />} />
 
         </Routes>
