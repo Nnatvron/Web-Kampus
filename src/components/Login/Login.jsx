@@ -1,7 +1,6 @@
 // src/components/Login/Login.jsx
 import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { Mail, Lock, Eye, EyeOff, ArrowLeft, User, Phone, GraduationCap, Check, X } from 'lucide-react';
 import { AuthContext } from '../../context/AuthContext';
 import './Login.css';
@@ -9,8 +8,6 @@ import './Login.css';
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-
-  const API_URL = 'https://backend-kampus-production.up.railway.app';
 
   // ===== STATE LOGIN =====
   const [nim, setNim] = useState('');
@@ -46,31 +43,32 @@ export default function Login() {
   };
   const isPasswordValid = Object.values(passwordValidation).every(Boolean);
 
-  // ===== HANDLER LOGIN =====
+  // ===== LOCAL FAKE DATABASE =====
+  const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
+
+  // ===== HANDLER LOGIN (LOCAL) =====
   const handleLogin = async () => {
     if (!nim || !password) return setError('NIM dan Password wajib diisi!');
     setLoading(true);
     setError('');
 
-    try {
-      // jika nim bukan email, format jadi email
-      const email = nim.includes('@') ? nim : `${nim}@gmail.com`;
-      const res = await axios.post(`${API_URL}/api/auth/login`, { email, password });
+    setTimeout(() => {
+      const user = localUsers.find(u => (u.nim === nim || u.email === nim) && u.password === password);
 
-      // login di context
-      login(res.data.token, res.data.user);
+      if (!user) {
+        setError("NIM / Password salah atau akun belum terdaftar.");
+        setLoading(false);
+        return;
+      }
 
+      login("dummy-token", user);
       navigate('/dashboard');
-    } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || 'Login gagal.');
-    } finally {
       setLoading(false);
-    }
+    }, 700);
   };
 
-  // ===== HANDLER REGISTER =====
-  const handleRegister = async () => {
+  // ===== HANDLER REGISTER (LOCAL) =====
+  const handleRegister = () => {
     const { nim, nama, email, password, confirmPassword, phone, jurusan, jenjang } = regForm;
 
     if (!nim || !nama || !email || !password || !confirmPassword)
@@ -80,40 +78,46 @@ export default function Login() {
 
     setRegLoading(true);
     setRegError('');
-    try {
-      const res = await axios.post(`${API_URL}/api/auth/register`, {
-        nim, nama, email, password, phone,
-        jurusan: jurusan || 'Belum ditentukan',
-        jenjang: jenjang || 'Belum ditentukan'
-      });
-      setRegSuccess(res.data.message || 'Pendaftaran berhasil!');
-      setTimeout(() => setShowRegister(false), 2000);
-    } catch (err) {
-      console.error(err);
-      setRegError(err.response?.data?.message || 'Registrasi gagal.');
-    } finally {
+
+    setTimeout(() => {
+      const exists = localUsers.some(u => u.email === email || u.nim === nim);
+      if (exists) {
+        setRegError("Akun sudah terdaftar.");
+        setRegLoading(false);
+        return;
+      }
+
+      const newUser = { nim, nama, email, password, phone, jurusan, jenjang };
+      const updated = [...localUsers, newUser];
+      localStorage.setItem("users", JSON.stringify(updated));
+
+      setRegSuccess("Pendaftaran berhasil!");
+      setTimeout(() => setShowRegister(false), 1500);
+
       setRegLoading(false);
-    }
+    }, 900);
   };
 
-  // ===== HANDLER FORGOT PASSWORD =====
-  const handleForgotPassword = async () => {
+  // ===== HANDLER FORGOT PASSWORD (LOCAL) =====
+  const handleForgotPassword = () => {
     if (!resetEmail) return setResetError('Email wajib diisi!');
     setResetLoading(true);
     setResetError('');
-    try {
-      const res = await axios.post(`${API_URL}/api/auth/forgot-password`, { email: resetEmail });
-      setResetSuccess(res.data.message);
-      setResetEmail('');
-    } catch (err) {
-      console.error(err);
-      setResetError(err.response?.data?.message || 'Gagal mengirim reset password.');
-    } finally {
+
+    setTimeout(() => {
+      const found = localUsers.some(u => u.email === resetEmail);
+
+      if (!found) {
+        setResetError("Email tidak ditemukan.");
+      } else {
+        setResetSuccess("Instruksi reset password dikirim (mode offline).");
+      }
+
       setResetLoading(false);
-    }
+    }, 900);
   };
 
-  // ===== HANDLE ENTER KEY =====
+  // ===== ENTER =====
   const handleKeyPress = (e) => {
     if (e.key !== 'Enter') return;
     if (showRegister) handleRegister();
@@ -180,7 +184,7 @@ export default function Login() {
           {/* FORGOT PASSWORD */}
           {showForgotPassword && (
             <div className="form-container">
-              <p>Masukkan email akun Anda untuk reset password.</p>
+              <p>Masukkan email Anda untuk reset password.</p>
               <div className="input-group">
                 <Mail className="input-icon" />
                 <input
@@ -192,11 +196,14 @@ export default function Login() {
                   className="input-field"
                 />
               </div>
+
               {resetError && <div className="error-message">{resetError}</div>}
               {resetSuccess && <div className="success-message">{resetSuccess}</div>}
+
               <button className="login-button" onClick={handleForgotPassword} disabled={resetLoading}>
                 {resetLoading ? 'Mengirim...' : 'Kirim Reset Password'}
               </button>
+
               <button className="back-to-login" onClick={() => setShowForgotPassword(false)}>
                 <ArrowLeft size={16} /> Kembali
               </button>

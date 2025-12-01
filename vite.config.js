@@ -1,19 +1,9 @@
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default ({ mode }) => {
-  const env = loadEnv(mode, process.cwd(), '');
-
-  return defineConfig({
-    plugins: [react()],
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_API_URL || 'https://backend-kampus-production.up.railway.app/',
-          changeOrigin: true,
-          secure: true, // ubah ke true karena kamu pakai HTTPS
-        },
-      },
-    },
-  });
-};
+export default defineConfig({
+  plugins: [react()],
+  server: {
+    proxy: {} // kosongin, biar ga ada proxy ke backend
+  }
+});

@@ -1,55 +1,54 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './components/Login/Login';
-import Dashboard from './Dashboard/Dashboard';
-import ResetForm from './components/Reset/Reset';
-import Loader from './components/Loader/Loader';  // Tambahin Loader
-import { useState, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./components/Login/Login";
+import Dashboard from "./Dashboard/Dashboard";
+import ResetForm from "./components/Reset/Reset";
+import Loader from "./components/Loader/Loader";
+
+import { useState, useEffect } from "react";
 
 function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Durasi loader (boleh ubah)
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 2000);
-
+    const timer = setTimeout(() => setLoading(false), 1000);
     return () => clearTimeout(timer);
   }, []);
 
-  // Kalau masih loading → tampilkan Loader dulu
   if (loading) return <Loader />;
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <AuthProvider>
         <Routes>
+
           {/* Public Route - Login */}
           <Route path="/login" element={<Login />} />
-          
-          {/* Public Route - Reset Password */}
+
+          {/* Public Route - Reset */}
           <Route path="/reset" element={<ResetForm />} />
 
-          {/* Protected Route - Dashboard */}
-          <Route 
-            path="/dashboard" 
+          {/* Protected Route */}
+          <Route
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            } 
+            }
           />
-          
-          {/* Default Route - Redirect to Login */}
+
+          {/* Default */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-          
-          {/* 404 - Redirect to Login */}
+
+          {/* 404 */}
           <Route path="*" element={<Navigate to="/login" replace />} />
+
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 

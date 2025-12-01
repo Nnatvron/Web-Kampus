@@ -9,32 +9,43 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   // ================== AUTO LOGIN ==================
-useEffect(() => {
-  const storedToken = localStorage.getItem('token');
-  const storedUser = localStorage.getItem('user');
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    const storedUser = localStorage.getItem('user');
 
-  if (storedUser && storedUser !== "undefined") {
-    try {
-      setUser(JSON.parse(storedUser));
-    } catch (err) {
-      console.warn("Failed to parse user from localStorage:", err);
-      localStorage.removeItem('user');
+    if (storedUser && storedUser !== "undefined") {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (err) {
+        localStorage.removeItem('user');
+      }
     }
-  }
 
-  if (storedToken && storedToken !== "undefined") {
-    setToken(storedToken);
-  }
+    if (storedToken && storedToken !== "undefined") {
+      setToken(storedToken);
+    }
 
-  setLoading(false);
-}, []);
+    setLoading(false);
+  }, []);
 
-  // ================== LOGIN ==================
-  const login = (newToken, userData) => {
-    setToken(newToken);
-    setUser(userData);
-    if (newToken) localStorage.setItem('token', newToken);
-    if (userData) localStorage.setItem('user', JSON.stringify(userData));
+  // ================== LOGIN (LOCAL / DUMMY) ==================
+  const login = async (email, password) => {
+    // Dummy user
+    const dummyUser = {
+      id: 1,
+      name: "User Lokal",
+      email: email
+    };
+
+    const dummyToken = "dummy-local-token-123";
+
+    setUser(dummyUser);
+    setToken(dummyToken);
+
+    localStorage.setItem("user", JSON.stringify(dummyUser));
+    localStorage.setItem("token", dummyToken);
+
+    return { success: true, user: dummyUser };
   };
 
   // ================== LOGOUT ==================
@@ -45,7 +56,6 @@ useEffect(() => {
     localStorage.removeItem('user');
   };
 
-  // Kalau token atau user ada, dianggap authenticated
   const isAuthenticated = !!token || !!user;
 
   return (
