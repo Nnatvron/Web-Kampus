@@ -1,0 +1,187 @@
+/* NAVBAR - COMMON */
+.navbar {
+  width: 100%;
+  height: 60px;
+  background: #1e1e2f;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  z-index: 999;
+}
+
+/* TITLE */
+.nav-title {
+  font-weight: 600;
+  font-size: 20px;
+    margin-left: auto; /* push ke kanan */
+  /* optional: tambah padding kanan untuk geser */
+  padding-left: 60px; /* geser lebih ke kiri */
+      position: static;
+    transform: none;
+    letter-spacing: 2px; /* jarak antar huruf, ubah sesuai keinginan */
+}
+
+/* DESKTOP LINKS */
+.nav-links {
+  font-weight: 550;
+  display: flex;
+  gap: 60px;
+  margin-left: auto; /* push ke kanan */
+  /* optional: tambah padding kanan untuk geser */
+  padding-right: 60px; /* geser lebih ke kiri */
+}
+
+/* DESKTOP LINKS - underline animasi */
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 15px;
+  position: relative;
+  padding: 5px 0;
+  transition: color 0.3s;
+}
+
+/* garis bawah animasi */
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #18b8ff;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #18b8ff;
+}
+
+.nav-links a:hover::after {
+  width: 100%;
+}
+
+/* BURGER (Mobile only) */
+.burger {
+  width: 25px;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.burger .line {
+  width: 100%;
+  height: 3px;
+  background: white;
+  transition: 0.3s;
+}
+
+/* Burger animation */
+.burger .line.open:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.burger .line.open:nth-child(2) {
+  opacity: 0;
+}
+
+.burger .line.open:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* MOBILE MENU — slide from LEFT */
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between; /* profile di bawah */
+  background: #141421;
+  width: 220px;
+  height: 100vh;
+  position: fixed;
+  top: 60px;
+  left: -220px;        /* start dari kiri */
+  padding: 20px;
+  transition: 0.3s ease;
+  z-index: 900;
+}
+
+.mobile-menu.show {
+  left: 0;             /* slide in dari kiri */
+}
+
+/* MAIN LINK ITEMS */
+.mobile-links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mobile-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.mobile-links a:hover {
+  color: #18b8ff;
+}
+
+/* PROFILE LINK DI BAWAH — sedikit naik supaya terlihat */
+.mobile-profile {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 45px; /* bisa disesuaikan */
+}
+
+.mobile-profile a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+}
+
+.mobile-profile a svg {
+  margin-right: 10px;
+}
+
+.mobile-profile a:hover {
+  color: #18b8ff;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  /* HIDE DESKTOP LINKS, SHOW BURGER */
+  .nav-links {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
+
+  /* TITLE DI TENGAH VERTIKAL DAN HORIZONTAL */
+  .navbar .nav-title {
+    position: absolute;
+    top: 50%;                  /* tengah vertikal */
+    left: 50%;                 /* tengah horizontal */
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (min-width: 769px) {
+  /* DESKTOP: TITLE DI KIRI, LINK DI KANAN */
+  .navbar .nav-title {
+    position: center;
+    transform: none;
+  }
+}

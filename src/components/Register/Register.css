@@ -1,6 +1,19 @@
 /* ===========================
    REGISTER PAGE CONTAINER
    =========================== */
+   /* Judul Register Form */
+.register-title  {
+  color: white;
+  font-size: 1.3rem; /* bisa diubah sesuai kebutuhan */
+  font-weight: 500; /* lebih tebal */
+  text-align: center; /* center horizontal */
+  margin-bottom: 1.5rem; /* beri jarak ke input */
+  margin-top: -1.5rem;
+}
+
+/* ===========================
+   REGISTER PAGE CONTAINER
+   =========================== */
 
 .register-wrapper {
   min-height: 100vh;
@@ -30,16 +43,19 @@
 /* ===========================
    FORM
    =========================== */
-
-.register-form {
+   /* Form Container */
+.form-container {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
+.register-form {
+  flex-direction: column;
+}
+
 .input-group {
   position: relative;
-  width: 100%;
 }
 
 .input-icon {
@@ -47,9 +63,10 @@
   left: 0;
   top: 50%;
   transform: translateY(-50%);
+  width: 1.25rem;
+  height: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
-  width: 20px;
-  height: 20px;
+  z-index: 1;
 }
 
 .input-field {
@@ -59,17 +76,46 @@
   border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   padding: 0.75rem 2.5rem 0.75rem 2rem;
   color: white;
-  font-size: 15px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
 .input-field:focus {
   outline: none;
-  border-bottom-color: #a855f7;
+  border-bottom-color: #00FFFF;
 }
 
+.input-field::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Select Field (Dropdown) */
 .select-field {
-  padding-left: 2rem !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ffffff' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 12px;
+}
+
+.select-field option {
+  background: #1a1a2e;
+  color: white;
+  padding: 0.5rem;
+}
+
+.select-field:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* ===========================
@@ -120,7 +166,9 @@
    BUTTON
    =========================== */
 
+/* kasih jarak atas button supaya tidak menempel */
 .register-button {
+  margin-top: 10rem; /* jarak atas */
   width: 100%;
   padding: 1rem;
   border-radius: 50px;
@@ -132,8 +180,9 @@
   font-size: 16px;
 }
 
+
 .back-to-login {
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 0.8rem;
   width: 100%;
   text-align: center;
@@ -144,7 +193,6 @@
   cursor: pointer;
   font-size: 15px;
 }
-
 /* ===========================
    ERROR / SUCCESS
    =========================== */
@@ -177,4 +225,3 @@
     border-radius: 25px;
   }
 }
-  

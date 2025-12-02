@@ -1,5 +1,6 @@
 // src/components/Auth/Register.jsx
 import { useState } from "react";
+import "./Register.css"
 import {
   Mail,
   Lock,
@@ -85,7 +86,10 @@ export default function Register() {
     <div className="login-wrapper">
       <div className="login-card">
         <div className="card-content">
-          <h2>Daftar Akun</h2>
+          <div className="avatar-container">
+  <img src="/picture/logo1.png" alt="Logo UBSI"  />
+</div>
+          <h2 className="register-title">Daftar Akun</h2>
 
           {/* FORM FIELDS */}
           {["nim", "nama", "email", "phone", "jurusan"].map((field) => {

@@ -3,10 +3,12 @@ import { AuthProvider } from "./context/AuthContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";  // ⬅️ WAJIB ADA
-import Dashboard from "./Dashboard/Dashboard";
+import Register from "./components/Register/Register";
+import Dashboard from "./components/Dashboard/Dashboard";
 import ResetForm from "./components/Reset/Reset";
 import Loader from "./components/Loader/Loader";
+
+import ProtectedLayout from "./layout/ProtectedLayout";
 
 import { useState, useEffect } from "react";
 
@@ -14,7 +16,7 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1000);
+    const timer = setTimeout(() => setLoading(false), 900);
     return () => clearTimeout(timer);
   }, []);
 
@@ -25,22 +27,23 @@ function App() {
       <AuthProvider>
         <Routes>
 
-          {/* Public */}
+          {/* PUBLIC ROUTES */}
           <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />  {/* ⬅️ ini */}
+          <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetForm />} />
 
-          {/* Protected */}
+          {/* PROTECTED ROUTES + NAVBAR */}
           <Route
-            path="/dashboard"
             element={
               <ProtectedRoute>
-                <Dashboard />
+                <ProtectedLayout />
               </ProtectedRoute>
             }
-          />
+          >
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
 
-          {/* Default */}
+          {/* DEFAULT REDIRECT */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="*" element={<Navigate to="/login" replace />} />
 
