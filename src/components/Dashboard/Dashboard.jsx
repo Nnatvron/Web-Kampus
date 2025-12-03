@@ -1,6 +1,9 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { AuthContext } from '../../context/AuthContext';
-import { User, BookOpen, Calendar, FileText, ClipboardList, CreditCard, Bell, GraduationCap } from 'lucide-react';
+import { 
+  User, BookOpen, Calendar, FileText, ClipboardList, 
+  CreditCard, Bell, GraduationCap 
+} from 'lucide-react';
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -10,6 +13,7 @@ export default function Dashboard() {
   const sliderRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
 
+  // Set current user from context or localStorage
   useEffect(() => {
     if (!user) {
       const saved = localStorage.getItem("authUser");
@@ -26,7 +30,7 @@ export default function Dashboard() {
     { text: 'Banner 3 / Kegiatan' },
   ];
 
-  // Auto scroll slider (tanpa loop saat hover)
+  // Auto scroll slider
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -47,6 +51,7 @@ export default function Dashboard() {
     return () => cancelAnimationFrame(animationFrame);
   }, [isHover]);
 
+  // Quick Access items
   const quickAccess = [
     { icon: <BookOpen size={28} />, label: 'Jadwal' },
     { icon: <Calendar size={28} />, label: 'Kalender' },
@@ -78,9 +83,10 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Border container besar */}
-      <div className="quick-access-container vertical-layout">
+      {/* Quick Access Container */}
+      <div className="quick-access-container">
         <h3 className="container-title">Quick Access</h3>
+
         {/* Row 1 */}
         <div className="quick-access-row">
           {quickAccess.slice(0,4).map((item, idx) => (
@@ -90,6 +96,7 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
         {/* Row 2 */}
         <div className="quick-access-row">
           {quickAccess.slice(4,8).map((item, idx) => (
@@ -99,8 +106,9 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+
         {/* Row 3 */}
-        <div className="quick-access-row">
+        <div className="quick-access-row justify-center">
           {quickAccess.slice(8,10).map((item, idx) => (
             <div className="quick-access-item" key={idx}>
               <div className="quick-access-icon">{item.icon}</div>
@@ -108,8 +116,8 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
-      </div>
 
+      </div>
     </div>
   );
 }

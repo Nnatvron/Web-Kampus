@@ -1,5 +1,4 @@
 /* Dashboard Page Styles */
-
 .dashboard-wrapper {
   min-height: 100vh;
   background: linear-gradient(135deg, #1e0836 0%, #2d1b4e 25%, #3a2858 50%, #4a3a6e 75%, #4a6fa5 100%);
@@ -74,72 +73,11 @@
   display: inline;
 }
 
-/* Main Content */
-.main-content {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem 1.5rem;
-}
-
-/* Welcome Card */
-.welcome-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.welcome-content {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.user-avatar {
-  width: 4rem;
-  height: 4rem;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #a855f7, #3b82f6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  color: white;
-}
-
-.user-info {
-  flex: 1;
-}
-
-.welcome-title {
-  color: white;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-}
-
-.user-detail {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.875rem;
-  margin: 0.25rem 0;
-}
-
 /* Slider Banner */
 .dashboard-slider-wrapper {
   overflow: hidden;
   width: 90%;
-  margin: 0 auto; /* horizontal center */
-  margin-bottom: 2rem;
+  margin: 0 auto 2rem auto;
   border-radius: 1rem;
 }
 
@@ -148,18 +86,18 @@
   gap: 1rem;
   scroll-behavior: smooth;
   overflow-x: auto;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE 10+ */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .dashboard-slider::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
 }
 
 .slider-item {
   flex: 0 0 100%;
-  height: 200px;
   min-width: 100%;
+  height: 200px;
   background: linear-gradient(135deg, #06b6d4, #3b82f6);
   display: flex;
   align-items: center;
@@ -176,11 +114,16 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 1rem;
-  padding: 1.5rem;
+  padding: 1.5rem;               /* dari 5rem → dikurangi NORMAL */
   border: 1px solid rgba(255, 255, 255, 0.2);
-  margin-bottom: 2rem;
+  margin: 2rem auto;             /* auto = center, tanpa jarak aneh */
+  width: fit-content;            /* ⭐ border ngikut ukuran isi */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
+/* Container Title */
 .container-title {
   color: white;
   font-size: 1.25rem;
@@ -189,20 +132,24 @@
   margin-bottom: 1rem;
 }
 
-/* Quick Access Grid */
-.quick-access-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 1rem;
-  justify-items: center;
+/* Quick Access Row */
+.quick-access-row {
+  display: flex;
+  justify-content: center;
+  gap: 20px;                      /* spasi antar kotak */
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
+/* Quick Access Item */
 .quick-access-item {
+  width: 100px;
+  height: 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: rgba(255, 255, 255, 0.05);
-  padding: 0.75rem;
+  justify-content: center;
+  background: rgba(255,255,255,0.05);
   border-radius: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -210,18 +157,16 @@
 
 .quick-access-item:hover {
   background: rgba(255, 255, 255, 0.15);
-  transform: translateY(-3px);
-  box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
 }
 
+/* Icon */
 .quick-access-icon {
-  width: 3rem;
-  height: 3rem;
+  width: 36px;
+  height: 36px;
   color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
   transition: transform 0.3s ease;
 }
 
@@ -229,9 +174,10 @@
   transform: scale(1.1);
 }
 
+/* Label */
 .quick-access-label {
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   text-align: center;
   word-wrap: break-word;
 }
@@ -259,14 +205,13 @@
 .menu-card:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.3);
 }
 
 .menu-card:active {
   transform: translateY(-2px);
 }
 
-/* Stagger animation for cards */
 .menu-card:nth-child(1) { animation-delay: 0.1s; }
 .menu-card:nth-child(2) { animation-delay: 0.2s; }
 .menu-card:nth-child(3) { animation-delay: 0.3s; }
@@ -327,7 +272,11 @@
   .welcome-content { flex-direction: column; text-align: center; }
   .welcome-title { font-size: 1.25rem; }
   .menu-grid { grid-template-columns: 1fr; }
-  .quick-access-grid { grid-template-columns: repeat(2, 1fr); }
+  .quick-access-item {
+    width: 60px;
+    height: 60px;
+  }
+  .quick-access-label { font-size: 0.7rem; }
 }
 
 @media (max-width: 480px) {
@@ -336,7 +285,10 @@
   .welcome-card { padding: 1rem; }
   .user-avatar { width: 3rem; height: 3rem; }
   .menu-card { padding: 1.25rem; }
-  .quick-access-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .quick-access-item {
+    width: 50px;
+    height: 50px;
+  }
+  .quick-access-label { font-size: 0.65rem; }
   .dashboard-slider { height: 150px; font-size: 1.25rem; }
-  .quick-access-item { padding: 0.5rem; }
 }
