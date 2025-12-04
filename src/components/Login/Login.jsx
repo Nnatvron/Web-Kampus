@@ -1,8 +1,8 @@
-// src/components/Auth/Login.jsx
-import { useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { AuthContext } from "../../context/AuthContext";
+import Loader from "../Loader/Loader";
 import "./Login.css";
 
 export default function Login() {
@@ -13,13 +13,21 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  
+  // loader halaman mount
+  const [loading, setLoading] = useState(true);
+
+  // tampilkan loader saat halaman pertama kali mount
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 3000); // loader muncul 1.5s
+    return () => clearTimeout(timer);
+  }, []);
 
   const localUsers = JSON.parse(localStorage.getItem("users") || "[]");
 
   const handleLogin = () => {
     if (!nim || !password) return setError("NIM dan Password wajib diisi!");
-    setLoading(true);
+    setLoading(true); // loader muncul saat klik login
     setError("");
 
     setTimeout(() => {
@@ -42,19 +50,19 @@ export default function Login() {
       }
 
       setLoading(false);
-    }, 700);
+    }, 700); // simulasi login
   };
 
   return (
     <div className="login-wrapper">
+      {loading && <Loader />} {/* Loader universal */}
+
       <div className="login-card">
         <div className="card-content">
-<div className="avatar-container">
-  <img src="/picture/logo1.png" alt="Logo UBSI"  />
-</div>
+          <div className="avatar-container">
+            <img src="/picture/logo1.png" alt="Logo UBSI" />
+          </div>
 
-
-          {/* LOGIN FORM */}
           <div className="form-container">
             <div className="input-group">
               <Mail className="input-icon" />
@@ -89,17 +97,30 @@ export default function Login() {
 
             {error && <div className="error-message">{error}</div>}
 
-            <button className="login-button" onClick={handleLogin} disabled={loading}>
-              {loading ? "Memproses..." : "LOGIN"}
+            <button
+              className="login-button"
+              onClick={handleLogin}
+              disabled={loading}
+            >
+              LOGIN
             </button>
 
-            <button className="forgot-password-link" onClick={() => navigate("/reset")}>
+            <button
+              className="forgot-password-link"
+              onClick={() => navigate("/reset")}
+            >
               Lupa Password?
             </button>
 
-            <button className="register-link" onClick={() => navigate("/register")}>
+            <button
+              className="register-link"
+              onClick={() => navigate("/register")}
+            >
               Belum punya akun? <strong>Daftar</strong>
             </button>
+            <p className="footer-text">
+  © 2025 NexaCampus Technology. All rights reserved.
+</p>
           </div>
         </div>
       </div>

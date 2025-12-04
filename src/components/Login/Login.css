@@ -148,3 +148,10 @@
 @media (max-width: 640px) {
   .card-content { padding: 2rem 1.5rem; }
 }
+
+.footer-text {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #aaa;
+  text-align: center;
+}

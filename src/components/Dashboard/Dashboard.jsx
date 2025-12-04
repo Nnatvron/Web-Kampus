@@ -1,9 +1,11 @@
 import { useContext, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { 
   User, BookOpen, Calendar, FileText, ClipboardList, 
-  CreditCard, Bell, GraduationCap 
+  CreditCard, Bell, GraduationCap, Map, MessageSquare 
 } from 'lucide-react';
+import Loader from "../Loader/Loader"; // import loader
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -12,8 +14,20 @@ export default function Dashboard() {
 
   const sliderRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
+  const [loading, setLoading] = useState(true); // state loader
+  const [fadeOut, setFadeOut] = useState(false); // state untuk fade
+  const navigate = useNavigate(); // hook navigate
 
-  // Set current user from context or localStorage
+  // Loader effect dengan 3 detik + fade out
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFadeOut(true);
+      setTimeout(() => setLoading(false), 500);
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Ambil data user
   useEffect(() => {
     if (!user) {
       const saved = localStorage.getItem("authUser");
@@ -23,101 +37,110 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  // Banner data
   const bannerImages = [
     { text: 'Banner 1 / Info Kampus' },
     { text: 'Banner 2 / Promo' },
     { text: 'Banner 3 / Kegiatan' },
   ];
 
-  // Auto scroll slider
+  // Infinite Loop Banner
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
-    const speed = 1;
-    let animationFrame;
 
-    const autoScroll = () => {
+    const speed = 1;
+    let frame;
+
+    if (!slider.dataset.cloned) {
+      [...slider.children].forEach(child => {
+        slider.appendChild(child.cloneNode(true));
+      });
+      slider.dataset.cloned = "true";
+    }
+
+    const scroll = () => {
       if (!isHover) {
         slider.scrollLeft += speed;
-        if (slider.scrollLeft >= slider.scrollWidth - slider.clientWidth) {
-          slider.scrollLeft = 0;
-        }
+        const half = slider.scrollWidth / 2;
+        if (slider.scrollLeft >= half) slider.scrollLeft %= half;
       }
-      animationFrame = requestAnimationFrame(autoScroll);
+      frame = requestAnimationFrame(scroll);
     };
 
-    animationFrame = requestAnimationFrame(autoScroll);
-    return () => cancelAnimationFrame(animationFrame);
+    scroll();
+    return () => cancelAnimationFrame(frame);
   }, [isHover]);
 
-  // Quick Access items
   const quickAccess = [
-    { icon: <BookOpen size={28} />, label: 'Jadwal' },
-    { icon: <Calendar size={28} />, label: 'Kalender' },
-    { icon: <FileText size={28} />, label: 'Nilai' },
-    { icon: <ClipboardList size={28} />, label: 'KRS' },
-    { icon: <CreditCard size={28} />, label: 'Bayar' },
-    { icon: <Bell size={28} />, label: 'Pengumuman' },
-    { icon: <GraduationCap size={28} />, label: 'Beasiswa' },
-    { icon: <User size={28} />, label: 'Profil' },
-    { icon: <BookOpen size={28} />, label: 'Materi' },
-    { icon: <Calendar size={28} />, label: 'Agenda' },
+    { icon: <BookOpen size={28} />, label: 'Jadwal', path: '/jadwal' },
+    { icon: <Calendar size={28} />, label: 'Kalender', path: '/kalender' },
+    { icon: <FileText size={28} />, label: 'Nilai', path: '/nilai' },
+    { icon: <ClipboardList size={28} />, label: 'KRS', path: '/krs' },
+    { icon: <CreditCard size={28} />, label: 'Bayar', path: '/bayar' },
+    { icon: <Bell size={28} />, label: 'Pengumuman', path: '/pengumuman' },
+    { icon: <GraduationCap size={28} />, label: 'Beasiswa', path: '/beasiswa' },
+    { icon: <User size={28} />, label: 'Profil', path: '/profil' },
+    { icon: <Map size={28} />, label: 'Lokasi', path: '/lokasi' },
+    { icon: <MessageSquare size={28} />, label: 'Bantuan', path: '/bantuan' },
+    { icon: <BookOpen size={28} />, label: 'Materi', path: '/materi' },
+    { icon: <Calendar size={28} />, label: 'Agenda', path: '/agenda' },
   ];
+
+  // Render loader jika loading true
+  if (loading) return <Loader fadeOut={fadeOut} />;
 
   return (
     <div className="dashboard-wrapper">
 
-      {/* Slider Banner */}
+      {/* Slider */}
       <div 
         className="dashboard-slider-wrapper"
         onMouseEnter={() => setIsHover(true)}
         onMouseLeave={() => setIsHover(false)}
       >
         <div className="dashboard-slider" ref={sliderRef}>
-          {bannerImages.map((banner, idx) => (
-            <div className="slider-item" key={idx}>
+          {bannerImages.map((banner, i) => (
+            <div className="slider-item" key={i}>
               <p>{banner.text}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Quick Access Container */}
+      {/* Quick Access */}
       <div className="quick-access-container">
         <h3 className="container-title">Quick Access</h3>
 
-        {/* Row 1 */}
-        <div className="quick-access-row">
-          {quickAccess.slice(0,4).map((item, idx) => (
-            <div className="quick-access-item" key={idx}>
+        <div className="quick-access-grid">
+          {quickAccess.map((item, idx) => (
+            <div 
+              className="quick-access-item" 
+              key={idx}
+              onClick={() => {
+                if (item.path) navigate(item.path);
+              }}
+            >
               <div className="quick-access-icon">{item.icon}</div>
               <p className="quick-access-label">{item.label}</p>
             </div>
           ))}
         </div>
-
-        {/* Row 2 */}
-        <div className="quick-access-row">
-          {quickAccess.slice(4,8).map((item, idx) => (
-            <div className="quick-access-item" key={idx}>
-              <div className="quick-access-icon">{item.icon}</div>
-              <p className="quick-access-label">{item.label}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Row 3 */}
-        <div className="quick-access-row justify-center">
-          {quickAccess.slice(8,10).map((item, idx) => (
-            <div className="quick-access-item" key={idx}>
-              <div className="quick-access-icon">{item.icon}</div>
-              <p className="quick-access-label">{item.label}</p>
-            </div>
-          ))}
-        </div>
-
       </div>
+
+      {/* WA Button */}
+      <a
+        href="https://wa.me/6285882494679?text=Halo,%20saya%20ingin%20bertanya%20mengenai%20kampus%20UBSI."
+        className="wa-floating-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg"
+          alt="WhatsApp"
+          className="wa-icon"
+        />
+      </a>
+
     </div>
   );
 }

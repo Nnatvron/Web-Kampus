@@ -1,0 +1,151 @@
+/* === Jadwal Wrapper === */
+.jadwal-wrapper {
+  max-width: 1200px;
+  margin: 4rem auto 2rem auto;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 1rem;
+  color: white;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.jadwal-wrapper h2 {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: white;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+}
+
+.protected-layout-wrapper main {
+  background: linear-gradient(135deg, #1e0836 0%, #2d1b4e 25%, #3a2858 50%, #4a3a6e 75%, #4a6fa5 100%);
+  padding: 1rem;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+.jadwal-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+}
+
+.jadwal-column {
+  min-width: 180px;
+}
+
+.jadwal-day {
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  border-bottom: 2px solid #fff;
+  padding-bottom: 0.3rem;
+}
+
+.jadwal-event {
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  color: white;
+}
+
+.jadwal-time {
+  font-weight: bold;
+}
+
+.jadwal-matkul {
+  margin-top: 0.2rem;
+}
+
+.jadwal-info {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.jadwal-detail {
+  margin: 0.5rem 0 1rem 0;
+  padding: 0.5rem;
+  background: rgba(255,255,255,0.05);
+  border-left: 3px solid white;
+  border-radius: 0.3rem;
+  font-size: 0.85rem;
+  color: white;
+}
+
+.absen-btn {
+  margin-top: 0.5rem;
+  padding: 0.3rem 0.6rem;
+  background-color: #4a6fa5;
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.absen-btn:hover {
+  background-color: #2d4f8a;
+}
+
+.attendance-history {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #ddd;
+}
+
+.attendance-history ul {
+  padding-left: 1rem;
+}
+
+.attendance-history li {
+  margin-bottom: 0.2rem;
+}
+
+/* ===== Responsive ===== */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .jadwal-column {
+    min-width: 150px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .jadwal-grid {
+    flex-direction: column;
+  }
+
+  .jadwal-column {
+    min-width: 100%;
+  }
+
+  .jadwal-wrapper {
+    margin: 3rem 2rem;
+    padding: 5rem;
+  }
+
+  .jadwal-wrapper h2 {
+    font-size: 1.5rem;
+  }
+
+  .jadwal-event {
+    font-size: 0.85rem;
+    padding: 2rem;
+  }
+
+  .jadwal-detail {
+    font-size: 0.8rem;
+  }
+
+  .absen-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+  }
+}
