@@ -1,13 +1,12 @@
-// src/components/ProtectedRoute.jsx
 import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import './ProtectedRoute.css'; // opsional, untuk styling loader
+import './ProtectedRoute.css';
 
 export default function ProtectedRoute({ children }) {
   const { isAuthenticated, loading } = useContext(AuthContext);
 
-  // Tampilkan loader sementara cek autentikasi
+  // Loader sementara cek autentikasi
   if (loading) {
     return (
       <div className="loader-container">
@@ -17,12 +16,11 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  // Jika belum login, redirect ke login
+  // Jika belum login → redirect ke login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Jika sudah login, render children
-  // Bungkus children dengan fragment supaya selalu berupa satu node
+  // Jika sudah login → render children
   return <>{children}</>;
 }

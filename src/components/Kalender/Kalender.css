@@ -2,7 +2,6 @@
 .kalender-page-wrapper {
   min-height: 100vh;
   padding-top: 80px;
-  background: linear-gradient(135deg, #1e0836 0%, #2d1b4e 25%, #3a2858 50%, #4a3a6e 75%, #4a6fa5 100%);
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -10,12 +9,11 @@
 
 /* Kontainer utama kalender */
 .kalender-wrapper {
-  max-width: 900px;
   width: 100%;
-  margin: 2rem;
+  margin: 1rem auto;
   background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(15px);
-  border-radius: 1rem;
+  border-radius: 2rem;
   padding: 1.5rem;
   color: white;
   box-shadow: 0 0 15px rgba(255,255,255,0.05);

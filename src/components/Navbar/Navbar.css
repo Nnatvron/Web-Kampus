@@ -1,4 +1,4 @@
-/* NAVBAR - COMMON */
+/* ========================= NAVBAR ========================= */
 .navbar {
   width: 100%;
   height: 60px;
@@ -17,55 +17,130 @@
 .nav-title {
   font-weight: 600;
   font-size: 20px;
-    margin-left: auto; /* push ke kanan */
-  /* optional: tambah padding kanan untuk geser */
-  padding-left: 60px; /* geser lebih ke kiri */
-      position: static;
-    transform: none;
-    letter-spacing: 2px; /* jarak antar huruf, ubah sesuai keinginan */
+  letter-spacing: 2px;
 }
 
-/* DESKTOP LINKS */
-.nav-links {
-  font-weight: 550;
+/* NAV DATETIME (FIX CENTER) */
+.nav-datetime {
   display: flex;
-  gap: 60px;
-  margin-left: auto; /* push ke kanan */
-  /* optional: tambah padding kanan untuk geser */
-  padding-right: 60px; /* geser lebih ke kiri */
-}
-
-/* DESKTOP LINKS - underline animasi */
-.nav-links a {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-right: 23rem;
+  padding: 4px 14px;
+  line-height: 1;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.1);
+  box-shadow: 0 0 7px rgba(24,184,255,0.5),
+              0 0 1px rgba(24,184,255,0.3);
   color: white;
-  text-decoration: none;
-  font-size: 15px;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.nav-datetime .time,
+.nav-datetime .date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 7px;
+  line-height: 1;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.15);
+}
+
+/* NAV ICONS */
+.nav-icons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.nav-icon {
+  width: 35px;
+  height: 35px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
   position: relative;
-  padding: 5px 0;
-  transition: color 0.3s;
+  transition: 0.3s;
 }
 
-/* garis bawah animasi */
-.nav-links a::after {
-  content: "";
+.nav-icon:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* PROFILE DROPDOWN */
+.profile-dropdown {
   position: absolute;
-  left: 0;
-  bottom: 0;
-  width: 0%;
-  height: 2px;
-  background-color: #18b8ff;
-  transition: width 0.3s ease;
+  top: 45px;
+  right: 0;
+  background: #2a2a3c;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 140px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  z-index: 1000;
 }
 
-.nav-links a:hover {
-  color: #18b8ff;
+.profile-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.nav-links a:hover::after {
-  width: 100%;
+.profile-dropdown button:hover {
+  background: rgba(255,255,255,0.1);
 }
 
-/* BURGER (Mobile only) */
+/* NOTIF DROPDOWN */
+.notif-dropdown {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: #2a2a3c;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 0.5rem;
+  min-width: 200px;
+  max-height: 250px;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 5px 0;
+}
+
+.notif-item {
+  padding: 10px 12px;
+  color: white;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.notif-item:last-child { border-bottom: none; }
+
+.notif-empty {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+}
+
+/* ========================= BURGER MOBILE ========================= */
 .burger {
   width: 25px;
   display: none;
@@ -81,40 +156,38 @@
   transition: 0.3s;
 }
 
-/* Burger animation */
 .burger .line.open:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
-
 .burger .line.open:nth-child(2) {
   opacity: 0;
 }
-
 .burger .line.open:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
 }
 
-/* MOBILE MENU — slide from LEFT */
+/* ========================= MOBILE MENU (FIXED) ========================= */
 .mobile-menu {
-  display: none;
+  display: flex;                /* ← FIX PENTING */
   flex-direction: column;
-  justify-content: space-between; /* profile di bawah */
+  justify-content: flex-start;
   background: #141421;
   width: 220px;
   height: 100vh;
   position: fixed;
   top: 60px;
-  left: -220px;        /* start dari kiri */
+  left: -220px;                 /* sembunyi */
   padding: 20px;
-  transition: 0.3s ease;
+  transition: left 0.35s ease;  /* animasi smooth */
   z-index: 900;
+  border-right: 2px solid rgba(24,184,255,0.4); /* border glow */
+  box-shadow: 3px 0 10px rgba(24,184,255,0.3);
 }
 
 .mobile-menu.show {
-  left: 0;             /* slide in dari kiri */
+  left: 0;                      /* geser masuk */
 }
 
-/* MAIN LINK ITEMS */
 .mobile-links {
   display: flex;
   flex-direction: column;
@@ -123,65 +196,83 @@
 
 .mobile-links a {
   color: white;
-  text-decoration: none;
   font-size: 18px;
+  text-decoration: none;
 }
 
 .mobile-links a:hover {
   color: #18b8ff;
 }
 
-/* PROFILE LINK DI BAWAH — sedikit naik supaya terlihat */
-.mobile-profile {
+.mobile-icons {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 45px; /* bisa disesuaikan */
+  gap: 15px;
+  margin-top: 1rem;
 }
 
-.mobile-profile a {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
+.mobile-icon {
+  width: 35px;
+  height: 35px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.mobile-icon:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.mobile-item {
   display: flex;
   align-items: center;
+  gap: 12px;
+  padding: 12px 5px;
+  font-size: 17px;
+  color: white;
+  cursor: pointer;
+  border-radius: 6px;
 }
 
-.mobile-profile a svg {
-  margin-right: 10px;
+.mobile-item:hover {
+  background: rgba(255,255,255,0.15);
 }
 
-.mobile-profile a:hover {
-  color: #18b8ff;
+.mobile-item span {
+  font-size: 16px;
 }
 
-/* RESPONSIVE */
+
+/* ========================= RESPONSIVE TABLET ========================= */
+@media (max-width: 1024px) {
+  .navbar { padding: 0 15px; }
+  .nav-title { font-size: 16px; }
+  .nav-datetime {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+  }
+}
+
+/* ========================= RESPONSIVE MOBILE ========================= */
 @media (max-width: 768px) {
-  /* HIDE DESKTOP LINKS, SHOW BURGER */
-  .nav-links {
-    display: none;
-  }
-
-  .burger {
-    display: flex;
-  }
-
-  .mobile-menu {
-    display: flex;
-  }
-
-  /* TITLE DI TENGAH VERTIKAL DAN HORIZONTAL */
-  .navbar .nav-title {
+  .nav-datetime { display: none; }
+  .nav-title {
     position: absolute;
-    top: 50%;                  /* tengah vertikal */
-    left: 50%;                 /* tengah horizontal */
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
   }
+  .burger { display: flex; }
+  .mobile-menu { width: 200px; padding: 15px; }
+  .mobile-links a { font-size: 16px; }
 }
 
-@media (min-width: 769px) {
-  /* DESKTOP: TITLE DI KIRI, LINK DI KANAN */
-  .navbar .nav-title {
-    position: center;
-    transform: none;
-  }
+/* ========================= SMALL MOBILE ========================= */
+@media (max-width: 480px) {
+  .mobile-menu { width: 180px; padding: 12px; }
+  .profile-dropdown, .notif-dropdown { min-width: 120px; }
+  .mobile-links a { font-size: 14px; }
+  .nav-title { font-size: 13px; }
 }

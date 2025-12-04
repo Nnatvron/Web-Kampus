@@ -5,7 +5,7 @@ import {
   User, BookOpen, Calendar, FileText, ClipboardList, 
   CreditCard, Bell, GraduationCap, Map, MessageSquare 
 } from 'lucide-react';
-import Loader from "../Loader/Loader"; // import loader
+import Loader from "../Loader/Loader";
 import './Dashboard.css';
 
 export default function Dashboard() {
@@ -14,11 +14,11 @@ export default function Dashboard() {
 
   const sliderRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
-  const [loading, setLoading] = useState(true); // state loader
-  const [fadeOut, setFadeOut] = useState(false); // state untuk fade
-  const navigate = useNavigate(); // hook navigate
+  const [loading, setLoading] = useState(true);
+  const [fadeOut, setFadeOut] = useState(false);
+  const navigate = useNavigate();
 
-  // Loader effect dengan 3 detik + fade out
+  // Loader effect
   useEffect(() => {
     const timer = setTimeout(() => {
       setFadeOut(true);
@@ -75,18 +75,17 @@ export default function Dashboard() {
     { icon: <BookOpen size={28} />, label: 'Jadwal', path: '/jadwal' },
     { icon: <Calendar size={28} />, label: 'Kalender', path: '/kalender' },
     { icon: <FileText size={28} />, label: 'Nilai', path: '/nilai' },
-    { icon: <ClipboardList size={28} />, label: 'KRS', path: '/krs' },
-    { icon: <CreditCard size={28} />, label: 'Bayar', path: '/bayar' },
-    { icon: <Bell size={28} />, label: 'Pengumuman', path: '/pengumuman' },
-    { icon: <GraduationCap size={28} />, label: 'Beasiswa', path: '/beasiswa' },
-    { icon: <User size={28} />, label: 'Profil', path: '/profil' },
-    { icon: <Map size={28} />, label: 'Lokasi', path: '/lokasi' },
-    { icon: <MessageSquare size={28} />, label: 'Bantuan', path: '/bantuan' },
-    { icon: <BookOpen size={28} />, label: 'Materi', path: '/materi' },
-    { icon: <Calendar size={28} />, label: 'Agenda', path: '/agenda' },
+    { icon: <ClipboardList size={28} />, label: 'Skripsi', path: '/skripsi' },
+    { icon: <CreditCard size={28} />, label: 'Pembayaran', path: '/pembayaran' },
+    { icon: <Bell size={28} />, label: 'Beasiswa', path: '/beasiswa' },
+    { icon: <GraduationCap size={28} />, label: 'Materi', path: '/materi' },
+    { icon: <User size={28} />, label: 'null', path: '/null' },
+    { icon: <Map size={28} />, label: 'Lokasi.', path: '/lokasi' },
+    { icon: <MessageSquare size={28} />, label: 'Bantuan.', path: '/bantuan' },
+    { icon: <BookOpen size={28} />, label: 'Profile.', path: '/profile' },
+    { icon: <Calendar size={28} />, label: 'Agenda.', path: '/agenda' },
   ];
 
-  // Render loader jika loading true
   if (loading) return <Loader fadeOut={fadeOut} />;
 
   return (
@@ -116,9 +115,7 @@ export default function Dashboard() {
             <div 
               className="quick-access-item" 
               key={idx}
-              onClick={() => {
-                if (item.path) navigate(item.path);
-              }}
+              onClick={() => item.path && navigate(item.path)}
             >
               <div className="quick-access-icon">{item.icon}</div>
               <p className="quick-access-label">{item.label}</p>
