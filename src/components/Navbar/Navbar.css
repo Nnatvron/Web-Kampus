@@ -181,7 +181,7 @@
   transition: left 0.35s ease;  /* animasi smooth */
   z-index: 900;
   border-right: 2px solid rgba(24,184,255,0.4); /* border glow */
-  box-shadow: 3px 0 10px rgba(24,184,255,0.3);
+  box-shadow: 3px 0 10px #;
 }
 
 .mobile-menu.show {

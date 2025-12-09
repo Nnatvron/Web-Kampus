@@ -43,7 +43,9 @@ export default function Dashboard() {
     { text: 'Banner 3 / Kegiatan' },
   ];
 
-  // Infinite Loop Banner
+  /* ============================================================
+     BANNER FIX — AUTO JALAN TANPA SENTUH CURSOR
+     ============================================================ */
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -51,6 +53,7 @@ export default function Dashboard() {
     const speed = 1;
     let frame;
 
+    // Clone elemen slider (tetap seperti kode asli)
     if (!slider.dataset.cloned) {
       [...slider.children].forEach(child => {
         slider.appendChild(child.cloneNode(true));
@@ -58,16 +61,25 @@ export default function Dashboard() {
       slider.dataset.cloned = "true";
     }
 
+    // 👉 FIX UTAMA: Paksa DOM repaint + mulai scroll dari awal
+    slider.scrollLeft = 1; // trigger awal penting
+    slider.dispatchEvent(new Event("scroll")); // paksa repaint
+
     const scroll = () => {
       if (!isHover) {
         slider.scrollLeft += speed;
+
         const half = slider.scrollWidth / 2;
-        if (slider.scrollLeft >= half) slider.scrollLeft %= half;
+        if (slider.scrollLeft >= half) {
+          slider.scrollLeft = 0;
+        }
       }
       frame = requestAnimationFrame(scroll);
     };
 
-    scroll();
+    // 👉 scroll langsung jalan tanpa hover
+    setTimeout(() => scroll(), 20);
+
     return () => cancelAnimationFrame(frame);
   }, [isHover]);
 
@@ -79,8 +91,8 @@ export default function Dashboard() {
     { icon: <CreditCard size={28} />, label: 'Pembayaran', path: '/pembayaran' },
     { icon: <Bell size={28} />, label: 'Beasiswa', path: '/beasiswa' },
     { icon: <GraduationCap size={28} />, label: 'Materi', path: '/materi' },
-    { icon: <User size={28} />, label: 'null', path: '/null' },
-    { icon: <Map size={28} />, label: 'Lokasi.', path: '/lokasi' },
+    { icon: <User size={28} />, label: 'Ujian', path: '/ujian' },
+    { icon: <Map size={28} />, label: 'Tugas', path: '/tugas' },
     { icon: <MessageSquare size={28} />, label: 'Bantuan.', path: '/bantuan' },
     { icon: <BookOpen size={28} />, label: 'Profile.', path: '/profile' },
     { icon: <Calendar size={28} />, label: 'Agenda.', path: '/agenda' },

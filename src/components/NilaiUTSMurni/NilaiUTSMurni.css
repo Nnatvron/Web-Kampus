@@ -1,0 +1,238 @@
+/* WRAPPER */
+.nuts-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 100px 20px 40px;
+  color: #fff;
+}
+
+/* HEADER */
+.nuts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.nuts-name {
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.nuts-nim {
+  opacity: 0.85;
+}
+
+/* SELECT */
+.nuts-meta label {
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.nuts-select-wrap {
+  width: 230px;
+  position: relative;
+}
+
+.nuts-select {
+  width: 100%;
+  padding: 10px 40px 10px 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  color: white;
+  outline: none;
+  backdrop-filter: blur(10px);
+}
+
+.nuts-select option {
+  background: #111;
+  color: white;
+}
+
+.nuts-select:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.nuts-select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.8;
+}
+
+/* LAYOUT */
+.nuts-main {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 22px;
+}
+
+/* RING CARD */
+.nuts-ring-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+}
+
+/* RING ANIMATION */
+.nuts-ring-animate {
+  animation: ringAnim 1s ease forwards;
+}
+
+@keyframes ringAnim {
+  from { stroke-dashoffset: 300; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* TEXT */
+.nuts-score-big {
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.nuts-grade {
+  padding: 6px 12px;
+  background: rgba(255,60,60,0.1);
+  border-radius: 10px;
+  color: #ff8c8c;
+  font-weight: 700;
+}
+
+/* CARD */
+.nuts-card {
+  padding: 18px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+}
+
+.nuts-card-animated {
+  animation: fadeInUp 0.4s ease both;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nuts-tag {
+  padding: 6px 10px;
+  background: rgba(255,60,60,0.15);
+  color: #ff8c8c;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* COMMENT */
+.nuts-comment-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* Fade + Slide animation on change */
+.fadeSlide {
+  animation: fadeSlideIn 0.45s ease forwards;
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ring animation */
+.nuts-ring-animate {
+  animation: ringAnim 1.4s ease forwards;
+}
+
+@keyframes ringAnim {
+  0% {
+    stroke-dasharray: 0px;
+  }
+  100% {
+    /* nilai dihitung lewat inline JSX */
+  }
+}
+
+/* =========================================================
+   RESPONSIVE  — TABLET
+   ========================================================= */
+@media (max-width: 768px) {
+
+  .nuts-wrapper {
+    padding: 90px 16px 40px;
+  }
+
+  .nuts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .nuts-select-wrap {
+    width: 100%;
+  }
+
+  .nuts-main {
+    grid-template-columns: 1fr; /* ring & card turun 1 kolom */
+    gap: 16px;
+  }
+
+  .nuts-ring-card {
+    justify-content: center;
+  }
+
+  .nuts-score-big {
+    font-size: 26px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+@media (max-width: 480px) {
+
+  .nuts-name {
+    font-size: 1.1rem;
+  }
+
+  .nuts-ring-card {
+    flex-direction: column;
+    padding: 16px;
+  }
+
+  .nuts-score-big {
+    font-size: 24px;
+  }
+
+  .nuts-main {
+    gap: 14px;
+  }
+
+  .nuts-card {
+    padding: 14px;
+  }
+
+  .nuts-tag {
+    font-size: 0.85rem;
+    padding: 5px 8px;
+  }
+
+  .nuts-select {
+    padding: 10px 35px 10px 12px;
+  }
+}

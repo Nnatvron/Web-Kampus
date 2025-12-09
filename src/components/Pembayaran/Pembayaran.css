@@ -1,0 +1,98 @@
+.paymentMenu_container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(20px);
+  color: white;
+}
+
+.paymentMenu_title {
+  font-size: 38px;
+  margin-bottom: 40px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
+
+.paymentMenu_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.paymentMenu_card {
+  position: relative;
+  padding: 25px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+}
+
+.paymentMenu_card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.paymentMenu_card.active {
+  animation: selectPop 0.2s ease;
+  box-shadow: 0 0 25px var(--cardColor);
+  border-color: var(--cardColor);
+}
+
+@keyframes selectPop {
+  0% { transform: scale(1); }
+  60% { transform: scale(1.09); }
+  100% { transform: scale(1); }
+}
+
+.paymentMenu_icon {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  border: 3px solid var(--cardColor);
+  margin-bottom: 15px;
+}
+
+.paymentMenu_card h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.paymentMenu_card p {
+  margin-top: 8px;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.paymentMenu_glow {
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  background: var(--cardColor);
+  filter: blur(35px);
+  opacity: 0.35;
+  border-radius: 50%;
+  transition: 0.3s ease;
+}
+
+.paymentMenu_card:hover .paymentMenu_glow {
+  opacity: 0.55;
+}
+
+@media (max-width: 600px) {
+  .paymentMenu_title {
+    font-size: 28px;
+  }
+  .paymentMenu_card {
+    padding: 18px;
+  }
+}
