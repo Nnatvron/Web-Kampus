@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "./NilaiHERmurni.css";
+import "./NilaiHERMurni.css";
 
 export default function NilaiHERmurni() {
   const [selectedMK, setSelectedMK] = useState("Pemrograman Web");
