@@ -1,0 +1,109 @@
+.beasiswa_container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.beasiswa_title {
+  font-size: 36px;
+  margin-bottom: 40px;
+  text-shadow: 0 0 20px rgba(255,255,255,0.4);
+}
+
+.beasiswa_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.beasiswa_card {
+  position: relative;
+  padding: 25px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: hidden;
+  text-align: center;
+}
+
+.beasiswa_card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.beasiswa_card.active {
+  box-shadow: 0 0 25px var(--cardColor);
+  border-color: var(--cardColor);
+}
+
+.beasiswa_icon {
+  font-size: 40px;
+  margin-bottom: 15px;
+  color: var(--cardColor);
+}
+
+.beasiswa_card h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.beasiswa_card p {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.beasiswa_glow {
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  background: var(--cardColor);
+  filter: blur(35px);
+  opacity: 0.35;
+  border-radius: 50%;
+  transition: 0.3s ease;
+}
+
+.beasiswa_card:hover .beasiswa_glow {
+  opacity: 0.55;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .beasiswa_card {
+    padding: 20px;
+  }
+
+  .beasiswa_icon {
+    font-size: 32px;
+  }
+
+  .beasiswa_title {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .beasiswa_card {
+    padding: 18px;
+  }
+
+  .beasiswa_icon {
+    font-size: 28px;
+  }
+
+  .beasiswa_title {
+    font-size: 24px;
+  }
+}

@@ -20,10 +20,12 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.263.1",
     "mongoose": "^8.19.3",
+    "qrcode": "^1.5.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.20.0",
-    "react-toastify": "^11.0.5"
+    "react-toastify": "^11.0.5",
+    "remixicon": "^4.7.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",

@@ -1,3 +1,6 @@
+/* =========================
+   Container & Title
+   ========================= */
 .paymentMenu_container {
   width: 100%;
   min-height: 100vh;
@@ -15,22 +18,31 @@
   text-shadow: 0 0 20px rgba(255,255,255,0.4);
 }
 
+
+/* =========================
+   Grid Layout
+   ========================= */
 .paymentMenu_grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 25px;
   width: 100%;
   max-width: 1000px;
+  padding: 0 10px;
 }
 
+
+/* =========================
+   Card
+   ========================= */
 .paymentMenu_card {
   position: relative;
-  padding: 25px;
+  padding: 28px;
   border-radius: 18px;
   background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.18);
   cursor: pointer;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   overflow: hidden;
 }
@@ -52,34 +64,58 @@
   100% { transform: scale(1); }
 }
 
-.paymentMenu_icon {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
-  border: 3px solid var(--cardColor);
-  margin-bottom: 15px;
+
+/* =========================
+   Icon Wrapper
+   ========================= */
+.paymentMenu_iconWrapper {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid var(--cardColor);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 18px;
+  transition: 0.25s ease;
 }
 
-.paymentMenu_card h2 {
+.paymentMenu_iconWrapper i {
+  font-size: 30px;
+  color: var(--cardColor);
+}
+
+
+/* =========================
+   Text
+   ========================= */
+.paymentMenu_cardTitle {
   margin: 0;
   font-size: 22px;
+  font-weight: 600;
 }
 
-.paymentMenu_card p {
+.paymentMenu_cardDesc {
   margin-top: 8px;
-  opacity: 0.8;
   font-size: 14px;
+  opacity: 0.8;
+  line-height: 1.4;
 }
 
+
+/* =========================
+   Glow Effect
+   ========================= */
 .paymentMenu_glow {
   position: absolute;
   bottom: -30px;
   right: -30px;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   background: var(--cardColor);
-  filter: blur(35px);
-  opacity: 0.35;
+  filter: blur(40px);
+  opacity: 0.32;
   border-radius: 50%;
   transition: 0.3s ease;
 }
@@ -88,11 +124,31 @@
   opacity: 0.55;
 }
 
+
+/* =========================
+   Mobile Responsive
+   ========================= */
 @media (max-width: 600px) {
   .paymentMenu_title {
     font-size: 28px;
   }
+
+  .paymentMenu_grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 18px;
+    padding: 0 5px;
+  }
+
   .paymentMenu_card {
-    padding: 18px;
+    padding: 20px;
+  }
+
+  .paymentMenu_iconWrapper {
+    width: 55px;
+    height: 55px;
+  }
+
+  .paymentMenu_iconWrapper i {
+    font-size: 26px;
   }
 }

@@ -1,0 +1,112 @@
+.tagihan_container {
+  padding: 40px 20px;
+  text-align: center;
+  color: white;
+}
+
+.tagihan_title {
+  font-size: 30px;
+  margin-bottom: 30px;
+  text-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
+
+.tagihan_card {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 18px;
+  padding: 25px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.tagihan_row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.tagihan_row:last-child {
+  border-bottom: none;
+}
+
+.tagihan_price {
+  color: #80c8ff;
+  font-weight: 600;
+}
+
+.tagihan_totalRow {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+  padding-top: 15px;
+  font-size: 18px;
+  border-top: 2px solid rgba(255,255,255,0.25);
+}
+
+.tagihan_buttons {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column; /* tombol bawah berada di bawah Lanjut */
+  align-items: center;
+  gap: 12px; /* jarak antar tombol */
+}
+
+.tagihan_button {
+  padding: 14px 30px;
+  font-size: 18px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #4da6ff, #6c8dff);
+  border: none;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+  transition: 0.25s;
+}
+
+.tagihan_button:hover {
+  transform: scale(1.05);
+}
+
+.tagihan_back {
+  padding: 10px 25px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: rgba(255,255,255,0.18);
+  color: white;
+  transition: 0.25s;
+}
+
+.tagihan_back:hover {
+  background: rgba(255,255,255,0.28);
+}
+
+/* Responsive Mobile */
+@media (max-width: 480px) {
+  .tagihan_title {
+    font-size: 24px;
+  }
+
+  .tagihan_card {
+    padding: 18px;
+  }
+
+  .tagihan_row {
+    font-size: 14px;
+  }
+
+  .tagihan_totalRow {
+    font-size: 16px;
+  }
+
+  .tagihan_button, .tagihan_back {
+    width: 100%;
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,41 @@
+.va_container {
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+}
+
+.va_box {
+  font-size: 24px;
+  background: rgba(255,255,255,0.08);
+  padding: 20px;
+  border-radius: 16px;
+  margin: 20px 0;
+  letter-spacing: 2px;
+}
+
+.va_next, .va_back {
+  padding: 12px 28px;
+  margin: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.va_next {
+  background: linear-gradient(135deg,#4da6ff,#6c8dff);
+  color: white;
+}
+
+.va_next:hover {
+  transform: scale(1.05);
+}
+
+.va_back {
+  background: rgba(255,255,255,0.18);
+  color: white;
+}
+
+.va_back:hover {
+  background: rgba(255,255,255,0.28);
+}

@@ -1,0 +1,19 @@
+.status_container {
+  padding: 60px 20px;
+  text-align: center;
+  color: white;
+  font-size: 26px;
+  font-weight: 600;
+  animation: fadeSlide 0.5s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

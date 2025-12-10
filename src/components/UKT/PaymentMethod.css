@@ -1,0 +1,95 @@
+.pm_container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 80px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+}
+
+.pm_title {
+  font-size: 32px;
+  margin-bottom: 40px;
+  text-shadow: 0 0 15px rgba(255,255,255,0.3);
+}
+
+.pm_grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 25px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.pm_card {
+  position: relative;
+  padding: 22px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  text-align: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.pm_card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.pm_icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 0 auto 12px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: var(--cardColor);
+  background: rgba(255,255,255,0.1);
+  transition: 0.25s;
+}
+
+.pm_card:hover .pm_icon {
+  transform: scale(1.15);
+}
+
+.pm_card h2 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.pm_card p {
+  margin-top: 6px;
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* Back button */
+.pm_backBtn {
+  margin-top: 30px;
+  padding: 10px 25px;
+  border-radius: 10px;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+.pm_backBtn:hover {
+  background: rgba(255,255,255,0.35);
+}
+
+@media (max-width: 600px) {
+  .pm_title {
+    font-size: 26px;
+  }
+  .pm_card {
+    padding: 16px;
+  }
+}

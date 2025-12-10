@@ -1,0 +1,21 @@
+.ukt_container {
+  padding: 60px 20px;
+  min-height: 100vh;
+  color: white;
+}
+
+/* Animasi page transition */
+.fadeSlide {
+  animation: fadeSlide 0.4s ease;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -101,10 +101,10 @@ export default function Navbar() {
 
             {profileOpen && (
               <div className="profile-dropdown">
-                <button onClick={() => navigate("/dashboard/profile")}>
+                <button onClick={() => navigate("/profile")}>
                   <User size={16} /> Edit Profile
                 </button>
-                <button onClick={() => navigate("/dashboard/settings")}>
+                <button onClick={() => navigate("/setting")}>
                   <Settings size={16} /> Settings
                 </button>
                 <button onClick={handleLogout}>
@@ -123,7 +123,7 @@ export default function Navbar() {
           {/* PROFILE */}
           <div
             className="mobile-item"
-            onClick={() => navigate("/dashboard/profile")}
+            onClick={() => navigate("/profile")}
           >
             <User size={20} />
             <span>Profile</span>
@@ -132,7 +132,7 @@ export default function Navbar() {
           {/* SETTINGS */}
           <div
             className="mobile-item"
-            onClick={() => navigate("/dashboard/settings")}
+            onClick={() => navigate("/setting")}
             style={{ marginTop: "auto" }} // paling bawah
           >
             <Settings size={20} />

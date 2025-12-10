@@ -61,6 +61,9 @@
   margin: 2.5rem auto;
   border: 1px solid rgba(255,255,255,0.18);
   box-shadow: 0 0 10px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .container-title {
@@ -79,6 +82,7 @@
   gap: 22px;
   width: 100%;
   justify-items: center;
+  justify-content: center;
 }
 
 .quick-access-item {
@@ -147,6 +151,104 @@
 }
 
 /* =========================================================
+   TANYA UBSI / AI DUMMY CHAT
+   ========================================================= */
+.ai-helper-wrapper {
+  position: fixed;
+  right: 24px;
+  bottom: 100px; /* di atas WA button */
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.ai-helper-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #4da6ff, #6c8dff);
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  transition: 0.25s ease;
+}
+
+.ai-helper-btn:hover {
+  transform: scale(1.05);
+}
+
+.ai-helper-chat {
+  width: 280px;
+  max-width: 90vw;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(20px);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.ai-chat-header {
+  background: linear-gradient(135deg, #4da6ff, #6c8dff);
+  color: white;
+  font-weight: 700;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ai-chat-body {
+  padding: 12px;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.ai-chat-input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  margin-top: 6px;
+}
+
+.ai-chat-footer {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.ai-send-btn {
+  padding: 6px 14px;
+  background: #4da6ff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.ai-send-btn:hover {
+  transform: scale(1.05);
+}
+
+/* Animasi fade in up */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================================
    TABLET (≤1024px)
    ========================================================= */
 @media (max-width: 1024px) {
@@ -166,6 +268,9 @@
 @media (max-width: 768px) {
   .quick-access-grid {
     gap: 18px;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    justify-items: center;
   }
 
   .quick-access-item {
@@ -183,6 +288,14 @@
    SMALL MOBILE (≤480px)
    ========================================================= */
 @media (max-width: 480px) {
+  .quick-access-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    justify-content: center;
+    justify-items: center;
+    width: 100%;
+  }
+
   .quick-access-item {
     width: 74px;
     height: 74px;

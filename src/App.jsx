@@ -10,13 +10,21 @@ import ResetForm from "./components/Reset/Reset";
 import Kalender from "./components/Kalender/Kalender";
 import Jadwal from "./components/Jadwal/Jadwal";
 import ProtectedLayout from "./layout/ProtectedLayout";
-import Pembayaran from "./components/Pembayaran/Pembayaran"
+import Pembayaran from "./components/Pembayaran/Pembayaran";
+import Skripsi from "./components/Skripsi/Skripsi";
+import Beasiswa from "./components/Beasiswa/Beasiswa";
+import Materi from "./components/Materi/Materi";
+import Ujian from "./components/Ujian/Ujian";
+import Tugas from "./components/Tugas/Tugas";
+import Setting from "./components/Setting/Setting";
+import Profile from "./components/Profile/Profile";
+import UKT from "./components/UKT/UKT"; // <-- import UKT
 
 import Nilai from "./components/Nilai/Nilai";
 import NilaiTugas from "./components/NilaiTugas/NilaiTugas";
-import NilaiUTS from "./components/NilaiUTS/NilaiUTS"
-import NilaiUTSMurni from "./components/NilaiUTSMurni/NilaiUTSMurni"
-import NilaiUAS from "./components/NilaiUAS/NilaiUAS"
+import NilaiUTS from "./components/NilaiUTS/NilaiUTS";
+import NilaiUTSMurni from "./components/NilaiUTSMurni/NilaiUTSMurni";
+import NilaiUAS from "./components/NilaiUAS/NilaiUAS";
 import NilaiUASMurni from "./components/NilaiUASMurni/NilaiUASMurni";
 import NilaiHER from "./components/NilaiHER/NilaiHER";
 import NilaiHERmurni from "./components/NilaiHERMurni/NilaiHERMurni";
@@ -29,11 +37,12 @@ function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-
           {/* PUBLIC ROUTES */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/reset" element={<ResetForm />} />
+          <Route path="/setting" element={<Setting />} />
+          <Route path="/profile" element={<Profile />} />
 
           {/* PROTECTED ROUTES */}
           <Route
@@ -47,11 +56,20 @@ function App() {
             {/* Default redirect */}
             <Route index element={<Navigate to="dashboard" replace />} />
 
+            {/* DASHBOARD */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="kalender" element={<Kalender />} />
             <Route path="jadwal" element={<Jadwal />} />
             <Route path="nilai" element={<Nilai />} />
+            <Route path="skripsi" element={<Skripsi />} />
             <Route path="pembayaran" element={<Pembayaran />} />
+            <Route path="beasiswa" element={<Beasiswa />} />
+            <Route path="materi" element={<Materi />} />
+            <Route path="ujian" element={<Ujian />} />
+            <Route path="tugas" element={<Tugas />} />
+
+            {/* UKT PAYMENT FLOW */}
+            <Route path="pembayaran/ukt" element={<UKT />} />
 
             {/* NILAI DETAIL PAGES */}
             <Route path="nilai/tugas" element={<NilaiTugas />} />
@@ -63,18 +81,12 @@ function App() {
             <Route path="nilai/her-murni" element={<NilaiHERmurni />} />
           </Route>
 
-          {/* PEMBAYARAN PAGES */}
-
-
           {/* CATCH ALL */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
         {/* TOAST */}
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-        />
+        <ToastContainer position="top-right" autoClose={3000} />
       </AuthProvider>
     </BrowserRouter>
   );

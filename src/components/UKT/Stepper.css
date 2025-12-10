@@ -1,0 +1,38 @@
+.stepper_container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 40px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stepper_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: rgba(255,255,255,0.6);
+  font-size: 14px;
+}
+
+.stepper_item.done,
+.stepper_item.active {
+  color: #4da6ff;
+}
+
+.stepper_circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.stepper_item.done .stepper_circle,
+.stepper_item.active .stepper_circle {
+  border-color: #4da6ff;
+  background: rgba(77,166,255,0.2);
+}

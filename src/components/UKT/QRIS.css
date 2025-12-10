@@ -1,0 +1,49 @@
+.qris_container {
+  text-align: center;
+  padding: 60px 20px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center semua konten horizontal */
+  justify-content: center; /* opsional: center vertikal jika container tinggi */
+}
+
+.qris_image {
+  width: 200px;
+  height: 200px;
+  margin: 20px 0;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+
+  display: flex;           /* flex untuk centering inner content */
+  align-items: center;     /* vertical center */
+  justify-content: center; /* horizontal center */
+}
+
+.qris_next, .qris_back {
+  padding: 12px 28px;
+  margin: 10px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+.qris_next {
+  background: linear-gradient(135deg,#4da6ff,#6c8dff);
+  color: white;
+}
+
+.qris_next:hover {
+  transform: scale(1.05);
+}
+
+.qris_back {
+  background: rgba(255,255,255,0.18);
+  color: white;
+}
+
+.qris_back:hover {
+  background: rgba(255,255,255,0.28);
+}

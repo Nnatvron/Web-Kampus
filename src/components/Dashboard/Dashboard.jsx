@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { 
   User, BookOpen, Calendar, FileText, ClipboardList, 
-  CreditCard, Bell, GraduationCap, Map, MessageSquare 
+  CreditCard, Bell, GraduationCap, Map, MessageSquare, HelpCircle
 } from 'lucide-react';
 import Loader from "../Loader/Loader";
 import './Dashboard.css';
@@ -17,6 +17,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [fadeOut, setFadeOut] = useState(false);
   const navigate = useNavigate();
+
+  const [aiOpen, setAiOpen] = useState(false); // untuk Tanya UBSI
 
   // Loader effect
   useEffect(() => {
@@ -43,9 +45,6 @@ export default function Dashboard() {
     { text: 'Banner 3 / Kegiatan' },
   ];
 
-  /* ============================================================
-     BANNER FIX — AUTO JALAN TANPA SENTUH CURSOR
-     ============================================================ */
   useEffect(() => {
     const slider = sliderRef.current;
     if (!slider) return;
@@ -53,7 +52,6 @@ export default function Dashboard() {
     const speed = 1;
     let frame;
 
-    // Clone elemen slider (tetap seperti kode asli)
     if (!slider.dataset.cloned) {
       [...slider.children].forEach(child => {
         slider.appendChild(child.cloneNode(true));
@@ -61,14 +59,12 @@ export default function Dashboard() {
       slider.dataset.cloned = "true";
     }
 
-    // 👉 FIX UTAMA: Paksa DOM repaint + mulai scroll dari awal
-    slider.scrollLeft = 1; // trigger awal penting
-    slider.dispatchEvent(new Event("scroll")); // paksa repaint
+    slider.scrollLeft = 1;
+    slider.dispatchEvent(new Event("scroll"));
 
     const scroll = () => {
       if (!isHover) {
         slider.scrollLeft += speed;
-
         const half = slider.scrollWidth / 2;
         if (slider.scrollLeft >= half) {
           slider.scrollLeft = 0;
@@ -77,7 +73,6 @@ export default function Dashboard() {
       frame = requestAnimationFrame(scroll);
     };
 
-    // 👉 scroll langsung jalan tanpa hover
     setTimeout(() => scroll(), 20);
 
     return () => cancelAnimationFrame(frame);
@@ -121,7 +116,6 @@ export default function Dashboard() {
       {/* Quick Access */}
       <div className="quick-access-container">
         <h3 className="container-title">Quick Access</h3>
-
         <div className="quick-access-grid">
           {quickAccess.map((item, idx) => (
             <div 
@@ -134,6 +128,37 @@ export default function Dashboard() {
             </div>
           ))}
         </div>
+      </div>
+
+      {/* Tanya UBSI Button */}
+      <div className="ai-helper-wrapper">
+        <button 
+          className="ai-helper-btn"
+          onClick={() => setAiOpen(!aiOpen)}
+        >
+          <HelpCircle size={24} />
+          Tanya UBSI
+        </button>
+
+        {aiOpen && (
+          <div className="ai-helper-chat">
+            <div className="ai-chat-header">
+              Tanya UBSI
+              <button className="close-btn" onClick={() => setAiOpen(false)}>×</button>
+            </div>
+            <div className="ai-chat-body">
+              <p>Halo! Ini dummy chat UBSI, ketik pertanyaanmu...</p>
+              <input 
+                type="text" 
+                placeholder="Tulis pertanyaan..." 
+                className="ai-chat-input"
+              />
+            </div>
+            <div className="ai-chat-footer">
+              <button className="ai-send-btn">Kirim</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* WA Button */}
