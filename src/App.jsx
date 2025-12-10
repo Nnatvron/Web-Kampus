@@ -50,9 +50,8 @@ function App() {
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="kalender" element={<Kalender />} />
             <Route path="jadwal" element={<Jadwal />} />
-
-            {/* NILAI MAIN PAGE */}
             <Route path="nilai" element={<Nilai />} />
+            <Route path="pembayaran" element={<Pembayaran />} />
 
             {/* NILAI DETAIL PAGES */}
             <Route path="nilai/tugas" element={<NilaiTugas />} />
@@ -65,7 +64,7 @@ function App() {
           </Route>
 
           {/* PEMBAYARAN PAGES */}
-          <Route path="pembayaran" element={<Pembayaran />} />
+
 
           {/* CATCH ALL */}
           <Route path="*" element={<Navigate to="/" replace />} />
